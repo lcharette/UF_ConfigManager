@@ -1,0 +1,24 @@
+{
+    "name": "UF Config Manager",
+    "type": "sprinkle",
+    "description": "This Sprinkle provides a UI for core and custom site settings",
+    "keywords": ["UserFrosting", "Config", "Settings", "Admin Panel"],
+    "homepage": "https://github.com/lcharette/UF_ConfigManager",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name": "Louis Charette",
+            "homepage": "https://github.com/lcharette"
+        }
+    ],
+    "version": "0.0.1",
+    "require": {
+        "php": ">=5.5.9",
+        "userfrosting/support": "1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "UserFrosting\\Sprinkle\\ConfigManager\\": "src/"
+        }
+    }
+}

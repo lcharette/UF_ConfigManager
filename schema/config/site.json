@@ -1,0 +1,19 @@
+{
+    "name" : "SITE.CONFIG",
+    "desc" : "SITE.CONFIG.DESC",
+
+    "config": {
+        "site.title" : {
+            "validators" : {
+                "required" : {
+                    "message" : "SITE.TITLE.REQUIRED"
+                }
+            },
+            "form" : {
+                "type" : "text",
+                "label" : "SITE.TITLE",
+                "icon" : "fa-comment"
+            }
+        }
+    }
+}
