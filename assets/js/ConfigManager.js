@@ -21,6 +21,17 @@
             // To use this inside sub-functions
             var elements = this;
 
+            // Get the currently selected panel from the url anchor and switch to it
+            var hash = window.location.hash.substr(1);
+            if (hash != undefined && hash !== "") {
+                $(elements).hide();
+                $("#"+hash).show();
+
+                // Change the menu
+                $(options.menu).find("li").removeClass('active');
+                $(options.menu).find('a[href="#'+hash+'"]').parent().addClass("active");
+            }
+
             // Set the menu
             $(options.menu).find("li > a").click(function () {
 
