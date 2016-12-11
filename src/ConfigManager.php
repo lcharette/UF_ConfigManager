@@ -8,14 +8,11 @@
  */
 namespace UserFrosting\Sprinkle\ConfigManager;
 
-use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager as CM;
+use UserFrosting\Sprinkle\ConfigManager\ServicesProvider\ConfigManagerServicesProvider;
 use UserFrosting\Sprinkle\Core\Initialize\Sprinkle;
-use UserFrosting\Support\Exception\ForbiddenException;
-use UserFrosting\Sprinkle\Gaston\Exception\GastonException;
-use UserFrosting\Sprinkle\Gaston\Exception\GastonFatalException;
 
 /**
- * Settings class.
+ * ConfigManager class.
  *
  * Bootstrapper class for the 'Settings' sprinkle.
  * @extends Sprinkle
@@ -27,11 +24,7 @@ class ConfigManager extends Sprinkle
      */
     public function init()
     {
-        // Using the `SettingsManager`, we merge all the available settings from the db into the main `config`
-        // Everything loaded before this point CAN'T be overwritten by the db settings and every Sprinkle loaded
-        // AFTER this one will overwrite the settings from the db
-        $this->ci->db;
-        $ConfigManager = new CM($this->ci);
-        $this->ci->config->mergeItems(null, $ConfigManager->fetch());
+        $serviceProvider = new ConfigManagerServicesProvider();
+        $serviceProvider->register($this->ci);
     }
 }
