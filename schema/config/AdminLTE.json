@@ -1,0 +1,32 @@
+{
+    "name" : "ADMINLTE.SETTINGS",
+    "desc" : "ADMINLTE.SETTINGS.DESC",
+
+    "config": {
+        "site.AdminLTE.skin" : {
+            "validators" : {
+                "required" : {}
+            },
+            "cached" : true,
+            "form" : {
+                "type" : "select",
+                "label" : "ADMINLTE.SETTINGS.SKIN",
+                "icon" : "",
+                "options" : {
+                    "blue" :         "ADMINLTE.SKIN.BLUE",
+                    "black" :        "ADMINLTE.SKIN.BLACK",
+                    "purple" :       "ADMINLTE.SKIN.PURPLE",
+                    "green" :        "ADMINLTE.SKIN.GREEN",
+                    "red" :          "ADMINLTE.SKIN.RED",
+                    "yellow" :       "ADMINLTE.SKIN.YELLOW",
+                    "blue-light" :   "ADMINLTE.SKIN.BLUE_LIGHT",
+                    "black-light" :  "ADMINLTE.SKIN.BLACK_LIGHT",
+                    "purple-light" : "ADMINLTE.SKIN.PURPLE_LIGHT",
+                    "green-light" :  "ADMINLTE.SKIN.GREEN_LIGHT",
+                    "red-light" :    "ADMINLTE.SKIN.RED_LIGHT",
+                    "yellow-light" : "ADMINLTE.SKIN.YELLOW_LIGHT"
+                }
+            }
+        }
+    }
+}

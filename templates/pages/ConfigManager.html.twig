@@ -5,35 +5,38 @@
 
 {% block body_matter %}
     <div class="row">
-        <div class="col-lg-12" id="alerts-page" style="margin-bottom: 10px"></div>
-    </div>
-    <div class="row">
         <div class="col-lg-3">
-            <ul id="configMenu" class="nav nav-pills nav-stacked">
-            {% for schema in schemas %}
-                <li role="presentation" {% if loop.first %} class="active"{% endif %}><a href="#configPanel-{{ schema.filename }}" data-target="configPanel-{{ schema.filename }}">{{ translate(schema.name) }}</a></li>
-            {% endfor %}
-            </ul>
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Menu</h3>
+                </div>
+                <div class="box-body">
+                    <ul id="configMenu" class="nav nav-pills nav-stacked">
+                    {% for schema in schemas %}
+                        <li role="presentation" {% if loop.first %} class="active"{% endif %}><a href="#configPanel-{{ schema.filename }}" data-target="configPanel-{{ schema.filename }}">{{ translate(schema.name) }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
         <div class="col-lg-9">
             {% for schema in schemas %}
-            <div id="configPanel-{{ schema.filename }}" class="panel panel-primary" {% if not loop.first %} style="display: none;"{% endif %}>
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ translate(schema.name) }}</h3>
-                </div>
-                <div class="panel-body">
-                    {% if schema.desc %}<p>{{ translate(schema.desc) }}</p>{% endif %}
-                    <form method="post" action="{{schema.formAction}}">
+            <div id="configPanel-{{ schema.filename }}" class="box box-primary" {% if not loop.first %} style="display: none;"{% endif %}>
+                <form method="post" action="{{schema.formAction}}">
+                    <div class="box-header">
+                        <h3 class="box-title">{{ translate(schema.name) }}</h3>
+                    </div>
+                    <div class="box-body">
+                        {% if schema.desc %}<p>{{ translate(schema.desc) }}</p>{% endif %}
                         {% include "components/csrf.html.twig" %}
                         <div class="form-alerts"></div>
                         {% include 'FormGenerator/FormGenerator.html.twig' with {fields: schema.fields} %}
-                        <center>
-                            <button type="reset" class="btn btn-default">{{translate('RESET')}}</button>
-                            <button type="submit" class="btn btn-primary js-submit">{{translate('SAVE')}}</button>
-                        </center>
-
-                    </form>
-                </div>
+                    </div>
+                    <div class="box-footer text-center">
+                        <button type="reset" class="btn btn-default">{{translate('RESET')}}</button>
+                        <button type="submit" class="btn btn-primary js-submit">{{translate('SAVE')}}</button>
+                    </div>
+                </form>
             </div>
             {% endfor %}
         </div>
@@ -52,13 +55,6 @@
                 }
             });
         });
-    </script>
-
-	<!-- UFAlert -->
-    <script>
-        // Fetch the ufAlerts
-        $("#alerts-page").ufAlerts();
-        $("#alerts-page").ufAlerts('fetch').ufAlerts('render');
     </script>
 
     <!-- Include form widgets JS -->
