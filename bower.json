@@ -1,0 +1,27 @@
+{
+    "name": "ConfigManager-assets",
+    "version": "0.0.1",
+    "homepage": "https://github.com/lcharette/UF_ConfigManager",
+    "authors": [
+        "lcharette"
+    ],
+    "moduleType": [
+        "node"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "assets/vendor",
+        "examples",
+        "demo-resources",
+        "demo",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+    },
+    "resolutions": {
+    }
+}

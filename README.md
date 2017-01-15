@@ -14,35 +14,22 @@ This sprinkle requires the `FormGenerator` sprinkle. You'll find instruction on 
 ### Update composer
 From the UserFrosting `/app` folder, run `composer update`
 
-### Edit index.php
-Edit UserFrosting `public/index.php` file and add `ConfigManager` to the sprinkle list to enable it.
+### Add to the sprinkle list
+Edit UserFrosting `app/sprinkles/sprinkles.json` file and add `ConfigManager` to the sprinkle list to enable it globally.
 
+### Edit index.php
 You also need to add the Sprinkle Middleware. Find this line:
 ```
-$app->add($container->csrf);
+$app->run();
 ```
 
-And add this right under:
+And add this right above it:
 ```
 $app->add($container->configManager);
 ```
 
-### Add the js bundle
-Edit the `build/bundle.config.json` and add this at the end
-```
-    "js/ConfigManager" : {
-        "scripts": [
-            "js/ConfigManager.js"
-        ],
-        "options": {
-            "result": {
-                "type": {
-                  "styles": "plain"
-                }
-            }
-        }
-    }
-```
+### Update the assets build
+From the UserFrosting `/build` folder, run `npm run uf-assets-install`
 
 ### Create the MySQL table
 Add the necessary prefix to the `settings` table name if your install requires it.

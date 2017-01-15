@@ -1,0 +1,16 @@
+{
+    "bundle": {
+        "js/ConfigManager" : {
+            "scripts": [
+                "js/ConfigManager.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                      "styles": "plain"
+                    }
+                }
+            }
+        }
+    }
+}
