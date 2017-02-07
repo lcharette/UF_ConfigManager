@@ -88,7 +88,7 @@ class ConfigManagerController {
             unset($schemas[$i]['config']);
 
             // Add the field and validator so Twig can play with them
-            $schemas[$i]["fields"] = $schema->genereteForm();
+            $schemas[$i]["fields"] = $schema->generateForm();
             $schemas[$i]["validators"] = $validator->rules();
 
             // Add the save url for that schema
