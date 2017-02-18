@@ -22,7 +22,7 @@
         <div class="col-lg-9">
             {% for schema in schemas %}
             <div id="configPanel-{{ schema.filename }}" class="box box-primary" {% if not loop.first %} style="display: none;"{% endif %}>
-                <form method="post" action="{{schema.formAction}}">
+                <form method="post" action="{{schema.formAction}}" class="form-horizontal">
                     <div class="box-header">
                         <h3 class="box-title">{{ translate(schema.name) }}</h3>
                     </div>
@@ -30,7 +30,7 @@
                         {% if schema.desc %}<p>{{ translate(schema.desc) }}</p>{% endif %}
                         {% include "components/csrf.html.twig" %}
                         <div class="form-alerts"></div>
-                        {% include 'FormGenerator/FormGenerator.html.twig' with {fields: schema.fields} %}
+                        {% include 'FormGenerator/FormGenerator.html.twig' with {fields: schema.fields, 'formLayout': 'horizontal'} %}
                     </div>
                     <div class="box-footer text-center">
                         <button type="reset" class="btn btn-default">{{translate('RESET')}}</button>
