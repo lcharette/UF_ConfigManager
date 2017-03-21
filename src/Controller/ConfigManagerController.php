@@ -11,6 +11,7 @@ namespace UserFrosting\Sprinkle\ConfigManager\Controller;
 use Interop\Container\ContainerInterface;
 use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
 use UserFrosting\Sprinkle\FormGenerator\RequestSchema;
+use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
@@ -64,7 +65,9 @@ class ConfigManagerController {
     public function displayMain($request, $response, $args){
 
         // Access-controlled resource
-        // !TODO
+        if (!$this->ci->authorizer->checkAccess($this->ci->currentUser, 'update_site_config')) {
+            throw new ForbiddenException();
+        }
 
         // Get all the config schemas
         $schemas = $this->manager->getAllShemas();
@@ -98,7 +101,6 @@ class ConfigManagerController {
         // Time to render the page !
         $this->ci->view->render($response, 'pages/ConfigManager.html.twig', [
            "schemas" => $schemas,
-           //"url_cache" => $this->ci->router->pathFor('ConfigManager.cache') //!TODO
         ]);
 
     }
@@ -119,7 +121,9 @@ class ConfigManagerController {
         $ms = $this->ci->alerts;
 
         // Access-controlled resource
-        // !TODO
+        if (!$this->ci->authorizer->checkAccess($this->ci->currentUser, 'update_site_config')) {
+            throw new ForbiddenException();
+        }
 
         // Request POST data
         $post = $request->getParsedBody();
