@@ -14,6 +14,27 @@
                 "label" : "SITE.TITLE",
                 "icon" : "fa-comment"
             }
+        },
+        "site.registration.enabled" : {
+            "validators" : {},
+            "form" : {
+                "type" : "bool",
+                "label" : "SITE.REGISTRATION.ENABLED"
+            }
+        },
+        "site.registration.require_email_verification" : {
+            "validators" : {},
+            "form" : {
+                "type" : "bool",
+                "label" : "SITE.REGISTRATION.REQUIRE_EMAIL_VERIFICATION"
+            }
+        },
+        "settings.displayErrorDetails" : {
+            "validators" : {},
+            "form" : {
+                "type" : "bool",
+                "label" : "SETTINGS.DISPLAY_ERROR_DETAILS"
+            }
         }
     }
 }

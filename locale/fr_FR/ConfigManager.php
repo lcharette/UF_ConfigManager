@@ -15,6 +15,13 @@ return [
         "TITLE" => [
             "@TRANSLATION" => "Titre du site",
             "REQUIRED" => "Le titre du site est requis"
+        ],
+        "REGISTRATION" => [
+            "ENABLED" => "Activer l'inscription",
+            "REQUIRE_EMAIL_VERIFICATION" => "Exiger une vérification par e-mail lors de l'inscription"
         ]
+    ],
+    "SETTINGS" => [
+        "DISPLAY_ERROR_DETAILS" => "Afficher le détails des erreurs"
     ]
 ];

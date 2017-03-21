@@ -15,6 +15,13 @@ return [
         "TITLE" => [
             "@TRANSLATION" => "Site title",
             "REQUIRED" => "The site title is required"
+        ],
+        "REGISTRATION" => [
+            "ENABLED" => "Enabled site registration",
+            "REQUIRE_EMAIL_VERIFICATION" => "Require email verification when registering"
         ]
+    ],
+    "SETTINGS" => [
+        "DISPLAY_ERROR_DETAILS" => "Display error details"
     ]
 ];
