@@ -19,5 +19,8 @@
         "psr-4": {
             "UserFrosting\\Sprinkle\\ConfigManager\\": "src/"
         }
+    },
+    "extra": {
+        "installer-name": "ConfigManager"
     }
 }
