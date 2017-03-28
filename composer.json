@@ -1,5 +1,5 @@
 {
-    "name": "UF Config Manager",
+    "name": "lcharette/UF_ConfigManager",
     "type": "sprinkle",
     "description": "This Sprinkle provides a UI for core and custom site settings",
     "keywords": ["UserFrosting", "Config", "Settings", "Admin Panel"],
@@ -11,9 +11,9 @@
             "homepage": "https://github.com/lcharette"
         }
     ],
-    "version": "0.0.1",
+    "version": "1.0.1",
     "require": {
-        "php": ">=5.5.9"
+        "php": ">=5.6"
     },
     "autoload": {
         "psr-4": {
