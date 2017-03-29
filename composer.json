@@ -1,5 +1,5 @@
 {
-    "name": "lcharette/UF_ConfigManager",
+    "name": "lcharette/uf_configmanager",
     "type": "userfrosting-sprinkle",
     "description": "This Sprinkle provides a UI for core and custom site settings",
     "keywords": ["UserFrosting", "Config", "Settings", "Admin Panel"],
