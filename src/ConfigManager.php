@@ -8,8 +8,7 @@
  */
 namespace UserFrosting\Sprinkle\ConfigManager;
 
-use UserFrosting\Sprinkle\ConfigManager\ServicesProvider\ConfigManagerServicesProvider;
-use UserFrosting\Sprinkle\Core\Initialize\Sprinkle;
+use UserFrosting\System\Sprinkle\Sprinkle;
 
 /**
  * ConfigManager class.
@@ -19,12 +18,5 @@ use UserFrosting\Sprinkle\Core\Initialize\Sprinkle;
  */
 class ConfigManager extends Sprinkle
 {
-    /**
-     * Register services.
-     */
-    public function init()
-    {
-        $serviceProvider = new ConfigManagerServicesProvider();
-        $serviceProvider->register($this->ci);
-    }
+
 }
