@@ -8,7 +8,7 @@
  */
 namespace UserFrosting\Sprinkle\ConfigManager\Util;
 
-use UserFrosting\Sprinkle\ConfigManager\Models\Config;
+use UserFrosting\Sprinkle\ConfigManager\Database\Models\Config;
 use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Support\Exception\JsonException;
 use Interop\Container\ContainerInterface;

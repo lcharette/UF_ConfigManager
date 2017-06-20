@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2016 Louis Charette
  * @license
  */
-namespace UserFrosting\Sprinkle\ConfigManager\Model;
+namespace UserFrosting\Sprinkle\ConfigManager\Database\Models;
 
 use \Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
