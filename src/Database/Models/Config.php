@@ -9,14 +9,14 @@
 namespace UserFrosting\Sprinkle\ConfigManager\Model;
 
 use \Illuminate\Database\Capsule\Manager as Capsule;
-use UserFrosting\Sprinkle\Core\Models\UFModel;
+use UserFrosting\Sprinkle\Core\Database\Models\Model;
 
 /**
  * Settings class.
  *
  * @extends UFModel
  */
-class Config extends UFModel {
+class Config extends Model {
 
     /**
      * @var string The name of the table for the current model.
