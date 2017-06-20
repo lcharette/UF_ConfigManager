@@ -9,7 +9,7 @@
 namespace UserFrosting\Sprinkle\ConfigManager\Model;
 
 use \Illuminate\Database\Capsule\Manager as Capsule;
-use UserFrosting\Sprinkle\Core\Model\UFModel;
+use UserFrosting\Sprinkle\Core\Models\UFModel;
 
 /**
  * Settings class.

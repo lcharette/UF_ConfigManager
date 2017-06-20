@@ -6,9 +6,9 @@
  * @copyright Copyright (c) 2016 Louis Charette
  * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
-namespace UserFrosting\Sprinkle\ConfigManager\Model\Migrations\v100;
+namespace UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100;
 
-use UserFrosting\System\Bakery\Migrations\Migration;
+use UserFrosting\System\Bakery\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 

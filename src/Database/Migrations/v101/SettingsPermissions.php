@@ -6,13 +6,13 @@
  * @copyright Copyright (c) 2016 Louis Charette
  * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
-namespace UserFrosting\Sprinkle\ConfigManager\Model\Migrations\v101;
+namespace UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v101;
 
-use UserFrosting\System\Bakery\Migrations\Migration;
+use UserFrosting\System\Bakery\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
-use UserFrosting\Sprinkle\Account\Model\Permission;
-use UserFrosting\Sprinkle\Account\Model\Role;
+use UserFrosting\Sprinkle\Account\Database\Models\Permission;
+use UserFrosting\Sprinkle\Account\Database\Models\Role;
 
 /**
  * Settings permissions migration
@@ -24,8 +24,8 @@ class SettingsPermissions extends Migration
      * {@inheritDoc}
      */
     public $dependencies = [
-        '\UserFrosting\Sprinkle\Account\Model\Migrations\v400\PermissionsTable',
-        '\UserFrosting\Sprinkle\ConfigManager\Model\Migrations\v100\SettingsTable'
+        '\UserFrosting\Sprinkle\Account\Database\Migrations\v400\PermissionsTable',
+        '\UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100\SettingsTable'
     ];
 
     /**
