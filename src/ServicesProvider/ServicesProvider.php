@@ -14,7 +14,7 @@ use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
  * ConfigManagerServicesProvider class.
  * Registers services for the ConfigManager sprinkle, such as configManager, etc.
  */
-class ConfigManagerServicesProvider
+class ServicesProvider
 {
     /**
      * Register configManager services.

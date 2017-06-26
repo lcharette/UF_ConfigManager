@@ -10,8 +10,11 @@ namespace UserFrosting\Sprinkle\ConfigManager\Controller;
 
 use Interop\Container\ContainerInterface;
 use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
-use UserFrosting\Sprinkle\FormGenerator\RequestSchema;
+use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Support\Exception\ForbiddenException;
+use UserFrosting\Support\Repository\Loader\YamlFileLoader;
+use UserFrosting\Fortress\RequestSchema;
+use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
@@ -19,7 +22,7 @@ use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 /**
  * ConfigManagerController Class
  *
- * Controller class for /admin/settings/* URLs.  Generate the interface required to modify the sites settings and saving the changes
+ * Controller class for /settings/* URLs.  Generate the interface required to modify the sites settings and saving the changes
  */
 class ConfigManagerController {
 
@@ -45,11 +48,6 @@ class ConfigManagerController {
     public function __construct(ContainerInterface $ci) {
         $this->ci = $ci;
         $this->manager = new ConfigManager($ci);
-
-        // This Sprinkle required FormGenerator Sprinkle. Make sure it's there, otherwise error will be thrown later
-        if (!$this->ci->sprinkleManager->isAvailable("FormGenerator")) {
-            throw new \Exception("Sprinkle dependencies not met. FormGenerator Sprinkle is not available");
-        }
     }
 
     /**
@@ -75,24 +73,21 @@ class ConfigManagerController {
         // Parse each of them to get it's content
         foreach ($schemas as $i => $schemaData) {
 
-            // Set the schema and setup the validator
-            $schema = new RequestSchema();
-            $schema->setSchema($schemaData['config']);
+            // Set the schemam, the validator and the form
+			$schema = new RequestSchemaRepository($schemaData['config']);
             $validator = new JqueryValidationAdapter($schema, $this->ci->translator);
-
-            // Setup the form data
-            $schema->initForm($this->ci->config);
+            $form = new Form($schema, $this->ci->config);
 
             // The field names dot syntaxt won't make it across the HTTP POST request.
             // Wrap them in a nice `data` array
-            $schema->wrapNames("data");
+            $form->setFormNamespace("data");
 
             // Twig doesn't need the raw thing
             unset($schemas[$i]['config']);
 
             // Add the field and validator so Twig can play with them
-            $schemas[$i]["fields"] = $schema->generateForm();
-            $schemas[$i]["validators"] = $validator->rules();
+            $schemas[$i]["fields"] = $form->generate();
+            $schemas[$i]["validators"] = $validator->rules('json', true);
 
             // Add the save url for that schema
             $schemas[$i]["formAction"] =  $this->ci->router->pathFor('ConfigManager.save', ['schema' => $schemaData['filename']]);
@@ -129,12 +124,12 @@ class ConfigManagerController {
         $post = $request->getParsedBody();
 
         // So we first get the shcema data
-        $schemaData = $this->manager->loadSchema("schema://config/".$args['schema'].".json");
+        $loader = new YamlFileLoader("schema://config/".$args['schema'].".json");
+        $schemaData = $loader->load();
 
         // We can't pass the file directly to RequestSchema because it's a custom one
-        // So we create a new empty RequestSchema and feed it the `config` part of our custom schema
-        $schema = new RequestSchema();
-        $schema->setSchema($schemaData['config']);
+        // So we create a new empty RequestSchemaRepository and feed it the `config` part of our custom schema
+		$schema = new RequestSchemaRepository($schemaData['config']);
 
         // Transform the data
         $transformer = new RequestDataTransformer($schema);

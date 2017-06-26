@@ -8,8 +8,8 @@
  */
 namespace UserFrosting\Sprinkle\ConfigManager;
 
-use UserFrosting\Sprinkle\ConfigManager\ServicesProvider\ConfigManagerServicesProvider;
-use UserFrosting\Sprinkle\Core\Initialize\Sprinkle;
+use UserFrosting\System\Sprinkle\Sprinkle;
+use RocketTheme\Toolbox\Event\Event;
 
 /**
  * ConfigManager class.
@@ -20,11 +20,21 @@ use UserFrosting\Sprinkle\Core\Initialize\Sprinkle;
 class ConfigManager extends Sprinkle
 {
     /**
-     * Register services.
+     * Defines which events in the UF lifecycle our Sprinkle should hook into.
      */
-    public function init()
+    public static function getSubscribedEvents()
     {
-        $serviceProvider = new ConfigManagerServicesProvider();
-        $serviceProvider->register($this->ci);
+        return [
+            'onAddGlobalMiddleware' => ['onAddGlobalMiddleware', 0]
+        ];
+    }
+
+    /**
+     * Add middleware.
+     */
+    public function onAddGlobalMiddleware(Event $event)
+    {
+        $app = $event->getApp();
+        $app->add($this->ci->configManager);
     }
 }

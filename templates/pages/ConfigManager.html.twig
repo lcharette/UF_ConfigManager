@@ -1,4 +1,4 @@
-{% extends "layouts/dashboard.html.twig" %}
+{% extends "pages/abstract/dashboard.html.twig" %}
 
 {% block page_title %}{{ translate('SITE.CONFIG.MANAGER') }}{% endblock %}
 {% block page_description %}{{ translate('SITE.CONFIG.PAGEDESC') }}{% endblock %}
@@ -28,7 +28,7 @@
                     </div>
                     <div class="box-body">
                         {% if schema.desc %}<p>{{ translate(schema.desc) }}</p>{% endif %}
-                        {% include "components/csrf.html.twig" %}
+                        {% include "forms/csrf.html.twig" %}
                         <div class="form-alerts"></div>
                         {% include 'FormGenerator/FormGenerator.html.twig' with {fields: schema.fields, 'formLayout': 'horizontal'} %}
                     </div>
