@@ -8,9 +8,11 @@
  */
 namespace UserFrosting\Sprinkle\ConfigManager\Util;
 
+use UserFrosting\Sprinkle\Core\Facades\Debug;
 use UserFrosting\Sprinkle\ConfigManager\Database\Models\Config;
 use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Support\Exception\JsonException;
+use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -186,7 +188,9 @@ class ConfigManager
      */
     public function getAllShemas() {
 
-        $configSchemas = array();
+		$configSchemas = [];
+
+		$loader = new YamlFileLoader([]);
 
         // Get all the location where we can find config schemas
         $paths = array_reverse($this->ci->locator->findResources('schema://config', true, false));
@@ -200,44 +204,21 @@ class ConfigManager
             // Load every found files
             foreach ($files_with_path as $file) {
 
-                 // Load the file content
-                 $schema = $this->loadSchema($file);
+				// Load the file content
+				$schema = $loader->loadFile($file);
 
-                 // Get file name
-                 $filename = basename($file, ".json");
+				// Get file name
+				$filename = basename($file, ".json");
 
-                 //inject file name
-                 $schema['filename'] = $filename;
+				//inject file name
+				$schema['filename'] = $filename;
 
-                 // Add to list
-                 $configSchemas[$filename] = $schema;
+				// Add to list
+				$configSchemas[$filename] = $schema;
             }
         }
 
-        return $configSchemas;
-
-    }
-
-    /**
-     * loadSchema function.
-     * Load the specified file content and return it as an array
-     *
-     * @access public
-     * @param mixed $file   The full path of the schema we want
-     * @return array        The schema content
-     */
-    public function loadSchema($file)
-    {
-        $doc = file_get_contents($file);
-        if ($doc === false)
-            throw new FileNotFoundException("The schema '$file' could not be found.");
-
-        $schema = json_decode($doc, true);
-        if ($schema === null) {
-            throw new JsonException("The schema '$file' does not contain a valid JSON document.  JSON error: " . json_last_error());
-        }
-
-        return $schema;
+		return $configSchemas;
     }
 
 

@@ -7,7 +7,7 @@
  * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
-$app->group('/admin/settings', function () {
+$app->group('/settings', function () {
     $this->get('', 'UserFrosting\Sprinkle\ConfigManager\Controller\ConfigManagerController:displayMain')
          ->setName('ConfigManager');
 
