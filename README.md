@@ -21,7 +21,7 @@ Edit UserFrosting `app/sprinkles.json` file and add the following to the `requir
 }
 ```
 
-Run `composer update` then `composer run-script bake` to install the sprinkle.
+Run `composer update` then `php bakery bake` to install the sprinkle.
 
 ## Permissions
 The migration will automatically add the `update_site_config` permission to the `Site Administrator` role. To give access to the config UI to another user, simply add the `update_site_config` permission slug to that user role. 
