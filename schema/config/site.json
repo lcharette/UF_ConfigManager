@@ -18,21 +18,21 @@
         "site.registration.enabled" : {
             "validators" : {},
             "form" : {
-                "type" : "bool",
+                "type" : "checkbox",
                 "label" : "SITE.REGISTRATION.ENABLED"
             }
         },
         "site.registration.require_email_verification" : {
             "validators" : {},
             "form" : {
-                "type" : "bool",
+                "type" : "checkbox",
                 "label" : "SITE.REGISTRATION.REQUIRE_EMAIL_VERIFICATION"
             }
         },
         "settings.displayErrorDetails" : {
             "validators" : {},
             "form" : {
-                "type" : "bool",
+                "type" : "checkbox",
                 "label" : "SETTINGS.DISPLAY_ERROR_DETAILS"
             }
         }
