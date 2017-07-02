@@ -69,21 +69,21 @@ class ConfigManager
         // Case n° 1 we don't have cached content. We load everything
         // Case n° 2 we have cached content, pull that and load the non chanched things to it
         if (($cached_settings = $cache->get('UF_config')) === null)
-		{
-			$settingsCollection = Config::all();
-			$settings = $this->collectionToArray($settingsCollection);
+        {
+            $settingsCollection = Config::all();
+            $settings = $this->collectionToArray($settingsCollection);
 
-			// Save in cache. The settings that are not cached are not included
-			$cache->forever('UF_config', $this->collectionToArray($settingsCollection, false));
-		}
-		else
-		{
-			// We have the cached values, we need to grab the non cached ones
-			$settingsCollection = Config::where('cached', 0);
-			$settings = array_merge_recursive($cached_settings, $this->collectionToArray($settingsCollection));
-		}
+            // Save in cache. The settings that are not cached are not included
+            $cache->forever('UF_config', $this->collectionToArray($settingsCollection, false));
+        }
+        else
+        {
+            // We have the cached values, we need to grab the non cached ones
+            $settingsCollection = Config::where('cached', 0);
+            $settings = array_merge_recursive($cached_settings, $this->collectionToArray($settingsCollection));
+        }
 
-		return $settings;
+        return $settings;
     }
 
     /**
@@ -105,15 +105,15 @@ class ConfigManager
         $setting->delete();
 
         // Remove from current laod
-		unset($this->ci->config[$key]);
+        unset($this->ci->config[$key]);
 
         // Delete cache
-		if ($setting->cached)
-		{
-			$this->ci->cache->forget('UF_config');
-		}
+        if ($setting->cached)
+        {
+            $this->ci->cache->forget('UF_config');
+        }
 
-		return true;
+        return true;
     }
 
     /**
@@ -124,28 +124,28 @@ class ConfigManager
      * @param string $key                       The setting's name
      * @param string $value                     The new value
      * @param bool $cached (default: true)      Whether this variable should be cached or if it
-	 *                                          changes too frequently to be efficiently cached.
+     *                                          changes too frequently to be efficiently cached.
      * @return bool                             True if the value was changed, false otherwise
      */
     public function set($key, $value, $cached = true) {
-		return $this->set_atomic($key, false, $value, $cached);
-	}
+        return $this->set_atomic($key, false, $value, $cached);
+    }
 
-	/**
-	 * set_atomic function.
-	 * Sets a setting's value only if the old_value matches the
-	 * current value or the setting does not exist yet.
-	 *
-	 * @access public
+    /**
+     * set_atomic function.
+     * Sets a setting's value only if the old_value matches the
+     * current value or the setting does not exist yet.
+     *
+     * @access public
      * @param string $key                       The setting's name
-	 * @param string $old_value                 Current configuration value or false to ignore
-	 *                                          the old value
-	 * @param string $new_value                 The new value
-	 * @param bool $cached (default: true)      Whether this variable should be cached or if it
-	 *                                          changes too frequently to be efficiently cached.
-	 * @return bool                             True if the value was changed, false otherwise
-	 */
-	public function set_atomic($key, $old_value, $new_value, $cached = true) {
+     * @param string $old_value                 Current configuration value or false to ignore
+     *                                          the old value
+     * @param string $new_value                 The new value
+     * @param bool $cached (default: true)      Whether this variable should be cached or if it
+     *                                          changes too frequently to be efficiently cached.
+     * @return bool                             True if the value was changed, false otherwise
+     */
+    public function set_atomic($key, $old_value, $new_value, $cached = true) {
 
         // Get the desired key
         $setting = Config::where('key', $key)->first();
@@ -154,12 +154,12 @@ class ConfigManager
 
             if ($old_value === false || $setting->value == $old_value) {
 
-    			$setting->value = $new_value;
-    			$setting->save();
+                $setting->value = $new_value;
+                $setting->save();
 
-    		} else {
-        		return false;
-    		}
+            } else {
+                return false;
+            }
 
         } else {
             $setting = new Config([
@@ -170,14 +170,14 @@ class ConfigManager
             $setting->save();
         }
 
-		if ($cached)
-		{
-			$this->ci->cache->forget('UF_config');
-		}
+        if ($cached)
+        {
+            $this->ci->cache->forget('UF_config');
+        }
 
-		$this->ci->config[$key] = $new_value;
-		return true;
-	}
+        $this->ci->config[$key] = $new_value;
+        return true;
+    }
 
     /**
      * getAllShemas function.
@@ -188,9 +188,9 @@ class ConfigManager
      */
     public function getAllShemas() {
 
-		$configSchemas = [];
+        $configSchemas = [];
 
-		$loader = new YamlFileLoader([]);
+        $loader = new YamlFileLoader([]);
 
         // Get all the location where we can find config schemas
         $paths = array_reverse($this->ci->locator->findResources('schema://config', true, false));
@@ -204,21 +204,21 @@ class ConfigManager
             // Load every found files
             foreach ($files_with_path as $file) {
 
-				// Load the file content
-				$schema = $loader->loadFile($file);
+                // Load the file content
+                $schema = $loader->loadFile($file);
 
-				// Get file name
-				$filename = basename($file, ".json");
+                // Get file name
+                $filename = basename($file, ".json");
 
-				//inject file name
-				$schema['filename'] = $filename;
+                //inject file name
+                $schema['filename'] = $filename;
 
-				// Add to list
-				$configSchemas[$filename] = $schema;
+                // Add to list
+                $configSchemas[$filename] = $schema;
             }
         }
 
-		return $configSchemas;
+        return $configSchemas;
     }
 
 
