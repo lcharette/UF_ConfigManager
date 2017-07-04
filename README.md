@@ -4,12 +4,12 @@ Configuration Manager sprinkle for Userfrosting V4. Lets you edit UserFrosting c
 > This version only works with UserFrosting 4.1.x !
 
 ## Install
-Edit UserFrosting `app/sprinkles.json` file and add the following to the `require` list : `"lcharette/uf_configmanager": "~2.0.0"`. Also add `FormGenerator` and `ConfigManager` to the `base` list. For example:
+Edit UserFrosting `app/sprinkles.json` file and add the following to the `require` list : `"lcharette/uf_configmanager": "^2.0.0"`. Also add `FormGenerator` and `ConfigManager` to the `base` list. For example:
 
 ```
 {
     "require": {
-        "lcharette/uf_configmanager": "~2.0.0"
+        "lcharette/uf_configmanager": "^2.0.0"
     },
     "base": [
         "core",
@@ -21,7 +21,7 @@ Edit UserFrosting `app/sprinkles.json` file and add the following to the `requir
 }
 ```
 
-Run `composer update` then `composer run-script bake` to install the sprinkle.
+Run `composer update` then `php bakery bake` to install the sprinkle.
 
 ## Permissions
 The migration will automatically add the `update_site_config` permission to the `Site Administrator` role. To give access to the config UI to another user, simply add the `update_site_config` permission slug to that user role. 

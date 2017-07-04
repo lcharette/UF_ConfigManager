@@ -9,6 +9,7 @@
 namespace UserFrosting\Sprinkle\ConfigManager\Controller;
 
 use Interop\Container\ContainerInterface;
+use UserFrosting\Sprinkle\Core\Facades\Debug;
 use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Support\Exception\ForbiddenException;
@@ -74,9 +75,12 @@ class ConfigManagerController {
         foreach ($schemas as $i => $schemaData) {
 
             // Set the schemam, the validator and the form
-			$schema = new RequestSchemaRepository($schemaData['config']);
+            $schema = new RequestSchemaRepository($schemaData['config']);
             $validator = new JqueryValidationAdapter($schema, $this->ci->translator);
-            $form = new Form($schema, $this->ci->config);
+
+            // Create the form
+            $config = $this->ci->config;
+            $form = new Form($schema, $config);
 
             // The field names dot syntaxt won't make it across the HTTP POST request.
             // Wrap them in a nice `data` array
@@ -129,7 +133,7 @@ class ConfigManagerController {
 
         // We can't pass the file directly to RequestSchema because it's a custom one
         // So we create a new empty RequestSchemaRepository and feed it the `config` part of our custom schema
-		$schema = new RequestSchemaRepository($schemaData['config']);
+        $schema = new RequestSchemaRepository($schemaData['config']);
 
         // Transform the data
         $transformer = new RequestDataTransformer($schema);

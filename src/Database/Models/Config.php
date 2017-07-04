@@ -14,7 +14,7 @@ use UserFrosting\Sprinkle\Core\Database\Models\Model;
 /**
  * Settings class.
  *
- * @extends UFModel
+ * @extends Model
  */
 class Config extends Model {
 
