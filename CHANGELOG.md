@@ -1,7 +1,10 @@
 # Change Log
 
-## 2.0.1
+## 2.0.2
 - Fix assets bundle issue
+
+## 2.0.1
+- Updated dependencies
 
 ## 2.0.0
 Updated for UserFrosting v4.1.x
