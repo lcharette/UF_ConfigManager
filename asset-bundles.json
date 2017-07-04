@@ -7,7 +7,7 @@
             "options": {
                 "result": {
                     "type": {
-                      "styles": "plain"
+                      "scripts": "plain"
                     }
                 }
             }
