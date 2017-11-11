@@ -168,6 +168,6 @@ class ConfigManagerController {
 
         //Success message!
         $ms->addMessageTranslated("success", "SITE.CONFIG.SAVED");
-        return $response->withStatus(200);
+        return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 }
