@@ -1,5 +1,8 @@
 # Change Log
 
+## 2.0.3
+- Fix issue with FormGenerator
+
 ## 2.0.2
 - Fix assets bundle issue
 
