@@ -9,12 +9,10 @@
 namespace UserFrosting\Sprinkle\ConfigManager\Controller;
 
 use Interop\Container\ContainerInterface;
-use UserFrosting\Sprinkle\Core\Facades\Debug;
 use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
-use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\ServerSideValidator;
@@ -42,7 +40,6 @@ class ConfigManagerController {
      * __construct function.
      * Create a new ConfigManagerController object.
      *
-     * @access public
      * @param ContainerInterface $ci
      * @return void
      */
@@ -55,7 +52,6 @@ class ConfigManagerController {
      * mainList function.
      * Used to display a list of all schema with their form
      *
-     * @access public
      * @param mixed $request
      * @param mixed $response
      * @param mixed $args
@@ -80,7 +76,7 @@ class ConfigManagerController {
 
             // Create the form
             $config = $this->ci->config;
-            $form = new Form($schema, $config->all());
+            $form = new Form($schema, $config);
 
             // The field names dot syntaxt won't make it across the HTTP POST request.
             // Wrap them in a nice `data` array
@@ -108,7 +104,6 @@ class ConfigManagerController {
      * update function.
      * Processes the request to save the settings to the db
      *
-     * @access public
      * @param mixed $request
      * @param mixed $response
      * @param mixed $args
