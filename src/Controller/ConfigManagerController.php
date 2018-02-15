@@ -80,7 +80,7 @@ class ConfigManagerController {
 
             // Create the form
             $config = $this->ci->config;
-            $form = new Form($schema, $config->all());
+            $form = new Form($schema, $config);
 
             // The field names dot syntaxt won't make it across the HTTP POST request.
             // Wrap them in a nice `data` array

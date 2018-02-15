@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.4
+- Fix issue with FormGenerator (for real this time)
+- Bump FormGenerator version
+
 ## 2.0.3
 - Fix issue with FormGenerator
 
