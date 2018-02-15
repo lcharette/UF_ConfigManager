@@ -19,9 +19,19 @@ return [
         "REGISTRATION" => [
             "ENABLED" => "Enabled site registration",
             "REQUIRE_EMAIL_VERIFICATION" => "Require email verification when registering"
+        ],
+        "COMPANY_NAME" => [
+            "@TRANSLATION" => "Company name",
+            "REQUIRED" => "Company name is required"
         ]
     ],
     "SETTINGS" => [
         "DISPLAY_ERROR_DETAILS" => "Display error details"
+    ],
+    "PHP" => [
+        "TIMEZONE" => [
+            "@TRANSLATION" => "Timezone",
+            "REQUIRED" => "Timezone is required"
+        ]
     ]
 ];
