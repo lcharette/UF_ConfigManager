@@ -1,5 +1,7 @@
 # Configuration Manager Sprinkle for [UserFrosting 4](https://www.userfrosting.com)
 
+[![StyleCI](https://github.styleci.io/repos/76127967/shield?branch=master)](https://github.styleci.io/repos/76127967) [![UserFrosting Version](https://img.shields.io/badge/UserFrosting->=%204.1-brightgreen.svg)](https://github.com/userfrosting/UserFrosting) [![Donate](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-brightgreen.svg)](https://ko-fi.com/A7052ICP) 
+
 Configuration Manager sprinkle for [UserFrosting 4](https://www.userfrosting.com). Lets you edit UserFrosting configs from the interface.
 
 > This version only works with UserFrosting 4.1.x !
