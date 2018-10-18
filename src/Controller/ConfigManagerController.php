@@ -1,40 +1,42 @@
 <?php
-/**
+
+/*
  * UF Config Manager
  *
- * @link      https://github.com/lcharette/UF_ConfigManager
+ * @link https://github.com/lcharette/UF_ConfigManager
+ *
  * @copyright Copyright (c) 2016 Louis Charette
- * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
+ * @license https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
+
 namespace UserFrosting\Sprinkle\ConfigManager\Controller;
 
 use Interop\Container\ContainerInterface;
-use UserFrosting\Sprinkle\Core\Facades\Debug;
+use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
+use UserFrosting\Fortress\RequestDataTransformer;
+use UserFrosting\Fortress\RequestSchema;
+use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
-use UserFrosting\Fortress\RequestSchema;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
-use UserFrosting\Fortress\RequestDataTransformer;
-use UserFrosting\Fortress\ServerSideValidator;
-use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 
 /**
- * ConfigManagerController Class
+ * ConfigManagerController Class.
  *
  * Controller class for /settings/* URLs.  Generate the interface required to modify the sites settings and saving the changes
  */
-class ConfigManagerController {
-
+class ConfigManagerController
+{
     /**
      * @var ContainerInterface The global container object, which holds all your services.
      */
     protected $ci;
 
     /**
-     * @var ConfigManager   Hold the ConfigManager class that handle setting the config and getting the config schema
-     *                      Note that we don't interact with the `Config` db model directly since it can't handle the cache
+     * @var ConfigManager Hold the ConfigManager class that handle setting the config and getting the config schema
+     *                    Note that we don't interact with the `Config` db model directly since it can't handle the cache
      */
     protected $manager;
 
@@ -42,26 +44,28 @@ class ConfigManagerController {
      * __construct function.
      * Create a new ConfigManagerController object.
      *
-     * @access public
      * @param ContainerInterface $ci
+     *
      * @return void
      */
-    public function __construct(ContainerInterface $ci) {
+    public function __construct(ContainerInterface $ci)
+    {
         $this->ci = $ci;
         $this->manager = new ConfigManager($ci);
     }
 
     /**
      * mainList function.
-     * Used to display a list of all schema with their form
+     * Used to display a list of all schema with their form.
      *
-     * @access public
      * @param mixed $request
      * @param mixed $response
      * @param mixed $args
+     *
      * @return void
      */
-    public function displayMain($request, $response, $args){
+    public function displayMain($request, $response, $args)
+    {
 
         // Access-controlled resource
         if (!$this->ci->authorizer->checkAccess($this->ci->currentUser, 'update_site_config')) {
@@ -84,37 +88,37 @@ class ConfigManagerController {
 
             // The field names dot syntaxt won't make it across the HTTP POST request.
             // Wrap them in a nice `data` array
-            $form->setFormNamespace("data");
+            $form->setFormNamespace('data');
 
             // Twig doesn't need the raw thing
             unset($schemas[$i]['config']);
 
             // Add the field and validator so Twig can play with them
-            $schemas[$i]["fields"] = $form->generate();
-            $schemas[$i]["validators"] = $validator->rules('json', true);
+            $schemas[$i]['fields'] = $form->generate();
+            $schemas[$i]['validators'] = $validator->rules('json', true);
 
             // Add the save url for that schema
-            $schemas[$i]["formAction"] =  $this->ci->router->pathFor('ConfigManager.save', ['schema' => $schemaData['filename']]);
+            $schemas[$i]['formAction'] = $this->ci->router->pathFor('ConfigManager.save', ['schema' => $schemaData['filename']]);
         }
 
         // Time to render the page !
         $this->ci->view->render($response, 'pages/ConfigManager.html.twig', [
-           "schemas" => $schemas,
+           'schemas' => $schemas,
         ]);
-
     }
 
     /**
      * update function.
-     * Processes the request to save the settings to the db
+     * Processes the request to save the settings to the db.
      *
-     * @access public
      * @param mixed $request
      * @param mixed $response
      * @param mixed $args
+     *
      * @return void
      */
-    public function update($request, $response, $args){
+    public function update($request, $response, $args)
+    {
 
         // Get the alert message stream
         $ms = $this->ci->alerts;
@@ -128,7 +132,7 @@ class ConfigManagerController {
         $post = $request->getParsedBody();
 
         // So we first get the shcema data
-        $loader = new YamlFileLoader("schema://config/".$args['schema'].".json");
+        $loader = new YamlFileLoader('schema://config/'.$args['schema'].'.json');
         $schemaData = $loader->load();
 
         // We can't pass the file directly to RequestSchema because it's a custom one
@@ -142,7 +146,7 @@ class ConfigManagerController {
         // We change the dot notation of our elements to a multidimensionnal array
         // This is required for the fields (but not for the schema) because the validator doesn't use the
         // dot notation the same way. Sending dot notation field name to the validator will fail.
-        $dataArray = array();
+        $dataArray = [];
         foreach ($data as $key => $value) {
             array_set($dataArray, $key, $value);
         }
@@ -151,6 +155,7 @@ class ConfigManagerController {
         $validator = new ServerSideValidator($schema, $this->ci->translator);
         if (!$validator->validate($dataArray)) {
             $ms->addValidationErrors($validator);
+
             return $response->withStatus(400);
         }
 
@@ -167,7 +172,8 @@ class ConfigManagerController {
         }
 
         //Success message!
-        $ms->addMessageTranslated("success", "SITE.CONFIG.SAVED");
+        $ms->addMessageTranslated('success', 'SITE.CONFIG.SAVED');
+
         return $response->withJson([], 200, JSON_PRETTY_PRINT);
     }
 }
