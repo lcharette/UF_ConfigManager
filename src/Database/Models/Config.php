@@ -1,14 +1,16 @@
 <?php
-/**
- * UF Settings
+
+/*
+ * UF Config Manager
  *
- * @link      https://github.com/lcharette/UF_Settings
+ * @link https://github.com/lcharette/UF_ConfigManager
+ *
  * @copyright Copyright (c) 2016 Louis Charette
- * @license
+ * @license https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
+
 namespace UserFrosting\Sprinkle\ConfigManager\Database\Models;
 
-use \Illuminate\Database\Capsule\Manager as Capsule;
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
 
 /**
@@ -16,20 +18,20 @@ use UserFrosting\Sprinkle\Core\Database\Models\Model;
  *
  * @extends Model
  */
-class Config extends Model {
-
+class Config extends Model
+{
     /**
      * @var string The name of the table for the current model.
      */
-    protected $table = "settings";
+    protected $table = 'settings';
 
     /**
      * @var array The fields of the table for the current model.
      */
     protected $fillable = [
-        "key",
-        "value",
-        "cache"
+        'key',
+        'value',
+        'cache',
     ];
 
     /**
@@ -39,7 +41,6 @@ class Config extends Model {
 
     /**
      * Create a new Project object.
-     *
      */
     public function __construct($properties = [])
     {
@@ -49,22 +50,20 @@ class Config extends Model {
     /**
      * Model's relations
      * Each of those should be in delete !
-     *
      */
 
     /**
-     * Model's parent relation
-     *
+     * Model's parent relation.
      */
 
     /**
-     * Delete this group from the database, along with any linked user and authorization rules
-     *
+     * Delete this group from the database, along with any linked user and authorization rules.
      */
     public function delete()
     {
         // Delete the main object
         $result = parent::delete();
+
         return $result;
     }
 }

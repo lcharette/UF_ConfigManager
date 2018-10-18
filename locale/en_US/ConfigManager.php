@@ -1,27 +1,37 @@
 <?php
+
+/*
+ * UF Config Manager
+ *
+ * @link https://github.com/lcharette/UF_ConfigManager
+ *
+ * @copyright Copyright (c) 2016 Louis Charette
+ * @license https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
+ */
+
 return [
-    "SITE" => [
-        "CONFIG" => [
-            "@TRANSLATION" => "UserFrosting Settings",
+    'SITE' => [
+        'CONFIG' => [
+            '@TRANSLATION' => 'UserFrosting Settings',
 
-            "DESC" => "Core settings of UserFrosting. See the config file for more configuration options",
+            'DESC' => 'Core settings of UserFrosting. See the config file for more configuration options',
 
-            "MANAGER" => "Configuration manager",
+            'MANAGER' => 'Configuration manager',
 
-            "PAGEDESC" => "This pages allows to edit the global site configuration variables stored in the database",
+            'PAGEDESC' => 'This pages allows to edit the global site configuration variables stored in the database',
 
-            "SAVED" => "Changes saved successfully !"
+            'SAVED' => 'Changes saved successfully !',
         ],
-        "TITLE" => [
-            "@TRANSLATION" => "Site title",
-            "REQUIRED" => "The site title is required"
+        'TITLE' => [
+            '@TRANSLATION' => 'Site title',
+            'REQUIRED'     => 'The site title is required',
         ],
-        "REGISTRATION" => [
-            "ENABLED" => "Enabled site registration",
-            "REQUIRE_EMAIL_VERIFICATION" => "Require email verification when registering"
-        ]
+        'REGISTRATION' => [
+            'ENABLED'                    => 'Enabled site registration',
+            'REQUIRE_EMAIL_VERIFICATION' => 'Require email verification when registering',
+        ],
     ],
-    "SETTINGS" => [
-        "DISPLAY_ERROR_DETAILS" => "Display error details"
-    ]
+    'SETTINGS' => [
+        'DISPLAY_ERROR_DETAILS' => 'Display error details',
+    ],
 ];
