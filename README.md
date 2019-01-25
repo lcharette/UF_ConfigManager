@@ -55,4 +55,4 @@ The configuration UI is bound to the the `/settings` route. Simply add a link to
 
 # Licence
 
-By [Louis Charette](https://github.com/lcharette). Copyright (c) 2017, free to use in personal and commercial software as per the MIT license.
+By [Louis Charette](https://github.com/lcharette). Copyright (c) 2019, free to use in personal and commercial software as per the MIT license.
