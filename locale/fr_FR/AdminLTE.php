@@ -5,7 +5,7 @@
  *
  * @link https://github.com/lcharette/UF_ConfigManager
  *
- * @copyright Copyright (c) 2016 Louis Charette
+ * @copyright Copyright (c) 2019 Louis Charette
  * @license https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
