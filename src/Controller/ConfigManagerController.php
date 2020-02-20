@@ -103,7 +103,7 @@ class ConfigManagerController
 
         // Time to render the page !
         $this->ci->view->render($response, 'pages/ConfigManager.html.twig', [
-           'schemas' => $schemas,
+            'schemas' => $schemas,
         ]);
     }
 
