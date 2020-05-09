@@ -1,12 +1,11 @@
 <?php
 
 /*
- * UF Config Manager
+ * UF Config Manager Sprinkle
  *
- * @link https://github.com/lcharette/UF_ConfigManager
- *
- * @copyright Copyright (c) 2019 Louis Charette
- * @license https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
+ * @link      https://github.com/lcharette/UF_ConfigManager
+ * @copyright Copyright (c) 2020 Louis Charette
+ * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
 namespace UserFrosting\Sprinkle\ConfigManager\Util;
@@ -30,8 +29,6 @@ class ConfigManager
      * __construct function.
      *
      * @param ContainerInterface $ci
-     *
-     * @return void
      */
     public function __construct(ContainerInterface $ci)
     {
@@ -59,8 +56,6 @@ class ConfigManager
      * fetch function.
      * Fetch all the config from the db and uses the
      * cache container to store most of thoses setting in the cache system.
-     *
-     * @return void
      */
     public function fetch()
     {
@@ -177,8 +172,6 @@ class ConfigManager
     /**
      * getAllShemas function.
      * Get all the config schemas available.
-     *
-     * @return void
      */
     public function getAllShemas()
     {
@@ -193,7 +186,7 @@ class ConfigManager
         foreach ($paths as $path) {
 
             // Get a list of all the schemas file
-            $files_with_path = glob($path.'/*.json');
+            $files_with_path = glob($path . '/*.json');
 
             // Load every found files
             foreach ($files_with_path as $file) {

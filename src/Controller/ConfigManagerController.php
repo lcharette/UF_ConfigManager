@@ -1,12 +1,11 @@
 <?php
 
 /*
- * UF Config Manager
+ * UF Config Manager Sprinkle
  *
- * @link https://github.com/lcharette/UF_ConfigManager
- *
- * @copyright Copyright (c) 2019 Louis Charette
- * @license https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
+ * @link      https://github.com/lcharette/UF_ConfigManager
+ * @copyright Copyright (c) 2020 Louis Charette
+ * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
 namespace UserFrosting\Sprinkle\ConfigManager\Controller;
@@ -45,8 +44,6 @@ class ConfigManagerController
      * Create a new ConfigManagerController object.
      *
      * @param ContainerInterface $ci
-     *
-     * @return void
      */
     public function __construct(ContainerInterface $ci)
     {
@@ -61,8 +58,6 @@ class ConfigManagerController
      * @param mixed $request
      * @param mixed $response
      * @param mixed $args
-     *
-     * @return void
      */
     public function displayMain($request, $response, $args)
     {
@@ -114,8 +109,6 @@ class ConfigManagerController
      * @param mixed $request
      * @param mixed $response
      * @param mixed $args
-     *
-     * @return void
      */
     public function update($request, $response, $args)
     {
@@ -132,7 +125,7 @@ class ConfigManagerController
         $post = $request->getParsedBody();
 
         // So we first get the shcema data
-        $loader = new YamlFileLoader('schema://config/'.$args['schema'].'.json');
+        $loader = new YamlFileLoader('schema://config/' . $args['schema'] . '.json');
         $schemaData = $loader->load();
 
         // We can't pass the file directly to RequestSchema because it's a custom one
