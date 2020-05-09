@@ -26,7 +26,7 @@ class ConfigManager
     protected $ci;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param ContainerInterface $ci
      */
