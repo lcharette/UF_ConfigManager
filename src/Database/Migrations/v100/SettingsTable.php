@@ -11,7 +11,7 @@
 namespace UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100;
 
 use Illuminate\Database\Schema\Blueprint;
-use UserFrosting\System\Bakery\Migration;
+use UserFrosting\Sprinkle\Core\Database\Migration;
 
 /**
  * Settings table migration.

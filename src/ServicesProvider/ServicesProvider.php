@@ -10,6 +10,7 @@
 
 namespace UserFrosting\Sprinkle\ConfigManager\ServicesProvider;
 
+use Psr\Container\ContainerInterface;
 use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
 
 /**
@@ -21,11 +22,13 @@ class ServicesProvider
     /**
      * Register configManager services.
      *
-     * @param Container $container A DI container implementing ArrayAccess and container-interop.
+     * @param ContainerInterface $container A DI container implementing ArrayAccess and container-interop.
      */
-    public function register($container)
+    public function register(ContainerInterface $container)
     {
         $container['configManager'] = function ($c) {
+
+            // Boot db
             $c->db;
 
             return new ConfigManager($c);

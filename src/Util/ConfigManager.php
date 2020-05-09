@@ -10,7 +10,7 @@
 
 namespace UserFrosting\Sprinkle\ConfigManager\Util;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use UserFrosting\Sprinkle\ConfigManager\Database\Models\Config;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 
@@ -26,7 +26,7 @@ class ConfigManager
     protected $ci;
 
     /**
-     * __construct function.
+     * Constructor
      *
      * @param ContainerInterface $ci
      */
@@ -88,7 +88,6 @@ class ConfigManager
      */
     public function delete($key)
     {
-
         // Get the desired key
         if (!$setting = Config::where('key', $key)->first()) {
             return false;

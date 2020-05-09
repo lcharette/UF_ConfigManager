@@ -17,8 +17,6 @@ use UserFrosting\System\Sprinkle\Sprinkle;
  * ConfigManager class.
  *
  * Bootstrapper class for the 'Settings' sprinkle.
- *
- * @extends Sprinkle
  */
 class ConfigManager extends Sprinkle
 {
