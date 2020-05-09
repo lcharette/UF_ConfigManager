@@ -13,11 +13,13 @@ namespace UserFrosting\Sprinkle\ConfigManager\Database\Models;
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
 
 /**
- * Settings class.
+ * Settings Model.
  *
- * @extends Model
+ * @property string $key
+ * @property string $value
+ * @property bool $cached
  */
-class Config extends Model
+class Setting extends Model
 {
     /**
      * @var string The name of the table for the current model.
@@ -25,7 +27,7 @@ class Config extends Model
     protected $table = 'settings';
 
     /**
-     * @var array The fields of the table for the current model.
+     * @var string[] The fields of the table for the current model.
      */
     protected $fillable = [
         'key',
@@ -37,32 +39,4 @@ class Config extends Model
      * @var bool Enable timestamps for Users.
      */
     public $timestamps = true;
-
-    /**
-     * Create a new Project object.
-     */
-    public function __construct($properties = [])
-    {
-        parent::__construct($properties);
-    }
-
-    /**
-     * Model's relations
-     * Each of those should be in delete !
-     */
-
-    /**
-     * Model's parent relation.
-     */
-
-    /**
-     * Delete this group from the database, along with any linked user and authorization rules.
-     */
-    public function delete()
-    {
-        // Delete the main object
-        $result = parent::delete();
-
-        return $result;
-    }
 }

@@ -31,7 +31,7 @@ class ServicesProvider
             // Boot db
             $c->db;
 
-            return new ConfigManager($c);
+            return new ConfigManager($c->locator, $c->cache, $c->config);
         };
     }
 }

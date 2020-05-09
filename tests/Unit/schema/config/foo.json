@@ -1,0 +1,25 @@
+{
+    "name" : "Foo Settings",
+    "desc" : "Foo Settings for testing",
+
+    "config": {
+        "foo.foo" : {
+            "validators" : {},
+            "cached" : true,
+            "form" : {
+                "type" : "text",
+                "label" : "Foo Foo",
+                "icon" : ""
+            }
+        },
+        "foo.bar" : {
+            "validators" : {},
+            "cached" : false,
+            "form" : {
+                "type" : "text",
+                "label" : "Foo Bar",
+                "icon" : ""
+            }
+        }
+    }
+}
