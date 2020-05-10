@@ -28,6 +28,7 @@ class Setting extends Model
 
     /**
      * {@inheritdoc}
+     *
      * @var string[]
      */
     protected $casts = [

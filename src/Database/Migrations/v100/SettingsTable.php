@@ -15,8 +15,6 @@ use UserFrosting\Sprinkle\Core\Database\Migration;
 
 /**
  * Settings table migration.
- *
- * @extends Migration
  */
 class SettingsTable extends Migration
 {

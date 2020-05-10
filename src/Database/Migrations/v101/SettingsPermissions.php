@@ -16,8 +16,6 @@ use UserFrosting\Sprinkle\Core\Database\Migration;
 
 /**
  * Settings permissions migration.
- *
- * @extends Migration
  */
 class SettingsPermissions extends Migration
 {
