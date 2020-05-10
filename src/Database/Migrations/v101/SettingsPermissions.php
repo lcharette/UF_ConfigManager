@@ -36,11 +36,14 @@ class SettingsPermissions extends Migration
     {
         // Check if permission exist
         $permissionExist = Permission::where('slug', 'update_site_config')->first();
+
+        // @codeCoverageIgnoreStart
         if ($permissionExist) {
             $this->io->warning("\nPermission slug `update_site_config` already exist. Skipping...");
 
             return;
         }
+        // @codeCoverageIgnoreEnd
 
         // Add default permissions
         $permission = new Permission([
