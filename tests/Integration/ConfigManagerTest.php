@@ -273,37 +273,37 @@ class ConfigManagerTest extends TestCase
         $this->assertNull($cache->get('UF_config')); // Back to null, because of addition.
 
         // Fetch newly created
-        $this->assertSame(['foo' => 'bar', 'bar' => '123'], $manager->fetch());
-        $this->assertSame(['foo' => 'bar'], $cache->get('UF_config')); // Bar is not cached !
+        $this->assertEquals(['foo' => 'bar', 'bar' => '123'], $manager->fetch());
+        $this->assertEquals(['foo' => 'bar'], $cache->get('UF_config')); // Bar is not cached !
 
         // Force change the non cached value
         $manager->set('bar', '321', false);
 
         // Cache won't be flushed
-        $this->assertSame(['foo' => 'bar'], $cache->get('UF_config'));
+        $this->assertEquals(['foo' => 'bar'], $cache->get('UF_config'));
 
         // Refetch, this time 'bar' will be refetched, but foo will be loaded from cache.
         // Result is same, this can only be seen by codecoverage & other unit tests.
-        $this->assertSame(['foo' => 'bar', 'bar' => '321'], $manager->fetch());
-        $this->assertSame(['foo' => 'bar'], $cache->get('UF_config'));
+        $this->assertEquals(['foo' => 'bar', 'bar' => '321'], $manager->fetch());
+        $this->assertEquals(['foo' => 'bar'], $cache->get('UF_config'));
 
         // Force change the cached value
         $manager->set('foo', 'rab', true);
 
         // Cache will be flushed by set, and is now empty
-        $this->assertSame(null, $cache->get('UF_config'));
+        $this->assertNull($cache->get('UF_config'));
 
         // Refetch, this time everything will be refetched as cache is empty.
-        $this->assertSame(['foo' => 'rab', 'bar' => '321'], $manager->fetch());
-        $this->assertSame(['foo' => 'rab'], $cache->get('UF_config')); // Bar is still not cached !
+        $this->assertEquals(['foo' => 'rab', 'bar' => '321'], $manager->fetch());
+        $this->assertEquals(['foo' => 'rab'], $cache->get('UF_config')); // Bar is still not cached !
 
         // Finally, we'll set bar as cached now !
         // Cache will be flushed by set, and is now empty
         // Fetch will load everything from DB, and both will be cached
         $manager->set('bar', 'bar', true);
-        $this->assertSame(null, $cache->get('UF_config'));
-        $this->assertSame(['foo' => 'rab', 'bar' => 'bar'], $manager->fetch());
-        $this->assertSame(['foo' => 'rab', 'bar' => 'bar'], $cache->get('UF_config')); // Bar is still not cached !
+        $this->assertNull($cache->get('UF_config'));
+        $this->assertEquals(['bar' => 'bar', 'foo' => 'rab'], $manager->fetch());
+        $this->assertEquals(['foo' => 'rab', 'bar' => 'bar'], $cache->get('UF_config')); // Bar is still not cached !
     }
 
     public function testInvoke(): void
