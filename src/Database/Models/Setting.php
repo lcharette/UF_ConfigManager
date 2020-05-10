@@ -27,12 +27,20 @@ class Setting extends Model
     protected $table = 'settings';
 
     /**
+     * {@inheritdoc}
+     * @var string[]
+     */
+    protected $casts = [
+        'cached' => 'boolean',
+    ];
+
+    /**
      * @var string[] The fields of the table for the current model.
      */
     protected $fillable = [
         'key',
         'value',
-        'cache',
+        'cached',
     ];
 
     /**

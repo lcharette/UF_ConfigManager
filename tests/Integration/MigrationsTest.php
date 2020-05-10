@@ -1,11 +1,11 @@
 <?php
 
 /*
- * UF Custom User Profile Field Sprinkle
+ * UF Config Manager Sprinkle
  *
- * @link      https://github.com/lcharette/UF_UserProfile
+ * @link      https://github.com/lcharette/UF_ConfigManager
  * @copyright Copyright (c) 2020 Louis Charette
- * @license   https://github.com/lcharette/UF_UserProfile/blob/master/LICENSE (MIT License)
+ * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
 namespace UserFrosting\Sprinkle\ConfigManager\Tests\Integration;
