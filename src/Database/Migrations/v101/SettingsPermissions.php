@@ -22,7 +22,7 @@ class SettingsPermissions extends Migration
     /**
      * {@inheritdoc}
      */
-    public $dependencies = [
+    public static $dependencies = [
         '\UserFrosting\Sprinkle\Account\Database\Migrations\v400\PermissionsTable',
         '\UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100\SettingsTable',
     ];
