@@ -102,10 +102,10 @@ class ConfigManagerControllerTest extends TestCase
                 'formAction' => '/settings/foo',
             ],
             'test' => [
-                'name'   => 'Test Settings',
-                'desc'   => 'Test Settings for testing',
+                'name'     => 'Test Settings',
+                'desc'     => 'Test Settings for testing',
                 'filename' => 'test',
-                'fields' => [
+                'fields'   => [
                     'data[test.foo]' => [
                         'autocomplete' => 'off',
                         'class'        => 'form-control',

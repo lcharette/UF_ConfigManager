@@ -55,9 +55,9 @@ class ConfigManagerController extends SimpleController
     /**
      * Used to display a list of all schema with their form.
      *
-     * @param RequestInterface $request
+     * @param RequestInterface  $request
      * @param ResponseInterface $response
-     * @param string[] $args
+     * @param string[]          $args
      */
     public function displayMain(RequestInterface $request, ResponseInterface $response, array $args)
     {
@@ -110,9 +110,9 @@ class ConfigManagerController extends SimpleController
     /**
      * Processes the request to save the settings to the db.
      *
-     * @param RequestInterface $request
+     * @param RequestInterface  $request
      * @param ResponseInterface $response
-     * @param string[] $args
+     * @param string[]          $args
      */
     public function update(RequestInterface $request, ResponseInterface $response, array $args)
     {
@@ -131,14 +131,14 @@ class ConfigManagerController extends SimpleController
         if (isset($args['schema'])) {
             $schemaName = $args['schema'];
         } else {
-            throw new NotFoundException("Schema not defined.");
+            throw new NotFoundException('Schema not defined.');
         }
 
         // Make sure post has data
         if (isset($post['data'])) {
             $data = $post['data'];
         } else {
-            throw new NotFoundException("Data not found.");
+            throw new NotFoundException('Data not found.');
         }
 
         // So we first get the shcema data
