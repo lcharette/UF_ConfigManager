@@ -10,29 +10,31 @@
 
 namespace UserFrosting\Sprinkle\ConfigManager\Controller;
 
-use Interop\Container\ContainerInterface;
+use Illuminate\Support\Arr;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager;
+use UserFrosting\Sprinkle\Account\Database\Models\Interfaces\UserInterface;
 use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
+use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Support\Exception\ForbiddenException;
+use UserFrosting\Support\Exception\NotFoundException;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 
 /**
- * ConfigManagerController Class.
+ * ConfigManager Controller.
  *
- * Controller class for /settings/* URLs.  Generate the interface required to modify the sites settings and saving the changes
+ * Controller class for /settings/* URLs. Generate the interface required to modify the sites settings and saving the changes
  */
-class ConfigManagerController
+class ConfigManagerController extends SimpleController
 {
-    /**
-     * @var ContainerInterface The global container object, which holds all your services.
-     */
-    protected $ci;
-
     /**
      * @var ConfigManager Hold the ConfigManager class that handle setting the config and getting the config schema
      *                    Note that we don't interact with the `Config` db model directly since it can't handle the cache
@@ -40,7 +42,6 @@ class ConfigManagerController
     protected $manager;
 
     /**
-     * __construct function.
      * Create a new ConfigManagerController object.
      *
      * @param ContainerInterface $ci
@@ -48,22 +49,26 @@ class ConfigManagerController
     public function __construct(ContainerInterface $ci)
     {
         $this->ci = $ci;
-        $this->manager = new ConfigManager($ci);
+        $this->manager = new ConfigManager($ci->locator, $ci->cache, $ci->config);
     }
 
     /**
-     * mainList function.
      * Used to display a list of all schema with their form.
      *
-     * @param mixed $request
-     * @param mixed $response
-     * @param mixed $args
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
+     * @param string[] $args
      */
-    public function displayMain($request, $response, $args)
+    public function displayMain(RequestInterface $request, ResponseInterface $response, array $args)
     {
+        /** @var AuthorizationManager */
+        $authorizer = $this->ci->authorizer;
+
+        /** @var UserInterface */
+        $currentUser = $this->ci->currentUser;
 
         // Access-controlled resource
-        if (!$this->ci->authorizer->checkAccess($this->ci->currentUser, 'update_site_config')) {
+        if (!$authorizer->checkAccess($currentUser, 'update_site_config')) {
             throw new ForbiddenException();
         }
 
@@ -103,16 +108,14 @@ class ConfigManagerController
     }
 
     /**
-     * update function.
      * Processes the request to save the settings to the db.
      *
-     * @param mixed $request
-     * @param mixed $response
-     * @param mixed $args
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
+     * @param string[] $args
      */
-    public function update($request, $response, $args)
+    public function update(RequestInterface $request, ResponseInterface $response, array $args)
     {
-
         // Get the alert message stream
         $ms = $this->ci->alerts;
 
@@ -124,8 +127,22 @@ class ConfigManagerController
         // Request POST data
         $post = $request->getParsedBody();
 
+        // Make sure args has schema
+        if (isset($args['schema'])) {
+            $schemaName = $args['schema'];
+        } else {
+            throw new NotFoundException("Schema not defined.");
+        }
+
+        // Make sure post has data
+        if (isset($post['data'])) {
+            $data = $post['data'];
+        } else {
+            throw new NotFoundException("Data not found.");
+        }
+
         // So we first get the shcema data
-        $loader = new YamlFileLoader('schema://config/' . $args['schema'] . '.json');
+        $loader = new YamlFileLoader('schema://config/' . $schemaName . '.json');
         $schemaData = $loader->load();
 
         // We can't pass the file directly to RequestSchema because it's a custom one
@@ -134,14 +151,14 @@ class ConfigManagerController
 
         // Transform the data
         $transformer = new RequestDataTransformer($schema);
-        $data = $transformer->transform($post['data']);
+        $data = $transformer->transform($data);
 
         // We change the dot notation of our elements to a multidimensionnal array
         // This is required for the fields (but not for the schema) because the validator doesn't use the
         // dot notation the same way. Sending dot notation field name to the validator will fail.
         $dataArray = [];
         foreach ($data as $key => $value) {
-            array_set($dataArray, $key, $value);
+            Arr::set($dataArray, $key, $value);
         }
 
         // We validate the data array against the schema
@@ -167,6 +184,6 @@ class ConfigManagerController
         //Success message!
         $ms->addMessageTranslated('success', 'SITE.CONFIG.SAVED');
 
-        return $response->withJson([], 200, JSON_PRETTY_PRINT);
+        return $response->withJson([], 200);
     }
 }
