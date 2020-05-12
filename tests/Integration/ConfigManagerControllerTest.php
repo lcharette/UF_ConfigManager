@@ -281,8 +281,8 @@ class ConfigManagerControllerTest extends TestCase
         // Get and analyse response
         $request = $this->getRequest()->withParsedBody([
             'data' => [
-                'test.foo' => '123bar'
-            ]
+                'test.foo' => '123bar',
+            ],
         ]);
 
         $this->expectException(NotFoundException::class);
@@ -330,7 +330,7 @@ class ConfigManagerControllerTest extends TestCase
             'data' => [
                 'test.foo' => '123bar',
                 'test.bar' => 'foo123',
-            ]
+            ],
         ]);
 
         // Check the manager
@@ -381,7 +381,7 @@ class ConfigManagerControllerTest extends TestCase
         $request = $this->getRequest()->withParsedBody([
             'data' => [
                 'test.foo' => '123bar',
-            ]
+            ],
         ]);
 
         $result = $controller->update($request, $this->getResponse(), ['schema' => 'test']);
