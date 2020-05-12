@@ -104,6 +104,7 @@ class ConfigManagerTest extends TestCase
                     ],
                     'test.bar' => [
                         'validators' => [
+                            "required" => [],
                         ],
                         'cached' => false,
                         'form'   => [

@@ -13,7 +13,9 @@
             }
         },
         "test.bar" : {
-            "validators" : {},
+            "validators" : {
+                "required" : {}
+            },
             "cached" : false,
             "form" : {
                 "type" : "text",

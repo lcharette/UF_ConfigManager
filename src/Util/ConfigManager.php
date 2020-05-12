@@ -47,7 +47,6 @@ class ConfigManager
     }
 
     /**
-     * __invoke function.
      * Invoke the ConfigManager middleware, merging the db config with the file based one.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request  PSR7 request

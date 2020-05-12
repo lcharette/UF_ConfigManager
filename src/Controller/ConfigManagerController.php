@@ -16,7 +16,6 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Fortress\RequestDataTransformer;
-use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager;
@@ -27,6 +26,7 @@ use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\NotFoundException;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
+use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
  * ConfigManager Controller.
@@ -59,7 +59,7 @@ class ConfigManagerController extends SimpleController
      * @param ResponseInterface $response
      * @param string[]          $args
      */
-    public function displayMain(RequestInterface $request, ResponseInterface $response, array $args)
+    public function displayMain(RequestInterface $request, ResponseInterface $response, array $args): void
     {
         /** @var AuthorizationManager */
         $authorizer = $this->ci->authorizer;
@@ -114,10 +114,13 @@ class ConfigManagerController extends SimpleController
      * @param ResponseInterface $response
      * @param string[]          $args
      */
-    public function update(RequestInterface $request, ResponseInterface $response, array $args)
+    public function update(RequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
-        // Get the alert message stream
+        /** @var \UserFrosting\Sprinkle\Core\Alert\AlertStream */
         $ms = $this->ci->alerts;
+
+        /** @var ResourceLocatorInterface */
+        $locator = $this->ci->locator;
 
         // Access-controlled resource
         if (!$this->ci->authorizer->checkAccess($this->ci->currentUser, 'update_site_config')) {
@@ -141,9 +144,12 @@ class ConfigManagerController extends SimpleController
             throw new NotFoundException('Data not found.');
         }
 
-        // So we first get the shcema data
-        $loader = new YamlFileLoader('schema://config/' . $schemaName . '.json');
-        $schemaData = $loader->load();
+        // So we first get the shcema data. Load file instead of in constructor as it's easier to mock/test
+        if (!$file = $locator->getResource('schema://config/' . $schemaName . '.json')) {
+            throw new NotFoundException("Schema $schemaName not found.");
+        }
+        $loader = new YamlFileLoader([]);
+        $schemaData = $loader->loadFile($file);
 
         // We can't pass the file directly to RequestSchema because it's a custom one
         // So we create a new empty RequestSchemaRepository and feed it the `config` part of our custom schema

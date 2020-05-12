@@ -13,14 +13,19 @@ namespace UserFrosting\Sprinkle\ConfigManager\Tests\Integration;
 use Illuminate\Cache\Repository as Cache;
 use Mockery;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Twig;
-use UserFrosting\I18n\Translator;
 use UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager;
 use UserFrosting\Sprinkle\Account\Database\Models\Interfaces\UserInterface;
 use UserFrosting\Sprinkle\ConfigManager\Controller\ConfigManagerController;
+use UserFrosting\Sprinkle\ConfigManager\Database\Models\Setting;
+use UserFrosting\Sprinkle\Core\Alert\AlertStream;
 use UserFrosting\Sprinkle\Core\Router;
+use UserFrosting\Sprinkle\Core\Tests\RefreshDatabase;
+use UserFrosting\Sprinkle\Core\Tests\TestDatabase;
 use UserFrosting\Sprinkle\Core\Tests\withController;
 use UserFrosting\Support\Exception\ForbiddenException;
+use UserFrosting\Support\Exception\NotFoundException;
 use UserFrosting\Support\Repository\Repository as Config;
 use UserFrosting\Tests\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
@@ -28,6 +33,8 @@ use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 class ConfigManagerControllerTest extends TestCase
 {
     use withController;
+    use TestDatabase;
+    use RefreshDatabase;
 
     public function testConstructor()
     {
@@ -130,7 +137,9 @@ class ConfigManagerControllerTest extends TestCase
                 'validators' => '{
     "rules": {
         "test.foo": [],
-        "test.bar": []
+        "test.bar": {
+            "required": true
+        }
     },
     "messages": []
 }',
@@ -150,7 +159,7 @@ class ConfigManagerControllerTest extends TestCase
             ->shouldReceive('all')->andReturn([])
             ->getMock();
         $ci->currentUser = Mockery::mock(UserInterface::class);
-        $ci->translator = Mockery::mock(Translator::class);
+        $ci->translator = Mockery::mock($this->ci->translator); // Referencing the ci here makes Translator/MessageTranslator automatically depending of the UF version
         $ci->authorizer = Mockery::mock(AuthorizationManager::class)
             ->shouldReceive('checkAccess')->with($ci->currentUser, 'update_site_config')->once()->andReturn(true)
             ->getMock();
@@ -174,26 +183,211 @@ class ConfigManagerControllerTest extends TestCase
 
         // Get and analyse response
         $result = $controller->displayMain($request, $response, []);
-        //$this->assertEquals($expectation, $result);
         $this->assertNull($result);
+    }
+
+    /**
+     * @depends testUpdate
+     */
+    public function testupdateWithNoAuth(): void
+    {
+        $ci = Mockery::mock(ContainerInterface::class);
+        $ci->locator = Mockery::mock(ResourceLocatorInterface::class);
+        $ci->alerts = Mockery::mock(AlertStream::class);
+        $ci->cache = Mockery::mock(Cache::class);
+        $ci->config = Mockery::mock(Config::class);
+        $ci->currentUser = Mockery::mock(UserInterface::class);
+        $ci->authorizer = Mockery::mock(AuthorizationManager::class)
+            ->shouldReceive('checkAccess')->with($ci->currentUser, 'update_site_config')->andReturn(false)
+            ->getMock();
+
+        $controller = new ConfigManagerController($ci);
+
+        $this->expectException(ForbiddenException::class);
+        $controller->update($this->getRequest(), $this->getResponse(), []);
+    }
+
+    /**
+     * @depends testUpdate
+     */
+    public function testUpdateWithNoSchema(): void
+    {
+        // Create mock services
+        $ci = Mockery::mock(ContainerInterface::class);
+        $ci->locator = Mockery::mock(ResourceLocatorInterface::class);
+        $ci->cache = Mockery::mock(Cache::class);
+        $ci->config = Mockery::mock(Config::class);
+        $ci->alerts = Mockery::mock(AlertStream::class);
+        $ci->currentUser = Mockery::mock(UserInterface::class);
+        $ci->authorizer = Mockery::mock(AuthorizationManager::class)
+            ->shouldReceive('checkAccess')->with($ci->currentUser, 'update_site_config')->once()->andReturn(true)
+            ->getMock();
+
+        // Get controller
+        $controller = new ConfigManagerController($ci);
+
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('Schema not defined.');
+        $controller->update($this->getRequest(), $this->getResponse(), []);
+    }
+
+    /**
+     * @depends testUpdate
+     */
+    public function testUpdateWithNoData(): void
+    {
+        // Create mock services
+        $ci = Mockery::mock(ContainerInterface::class);
+        $ci->locator = Mockery::mock(ResourceLocatorInterface::class);
+        $ci->cache = Mockery::mock(Cache::class);
+        $ci->config = Mockery::mock(Config::class);
+        $ci->alerts = Mockery::mock(AlertStream::class);
+        $ci->currentUser = Mockery::mock(UserInterface::class);
+        $ci->authorizer = Mockery::mock(AuthorizationManager::class)
+            ->shouldReceive('checkAccess')->with($ci->currentUser, 'update_site_config')->once()->andReturn(true)
+            ->getMock();
+
+        // Get controller
+        $controller = new ConfigManagerController($ci);
+
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('Data not found.');
+        $controller->update($this->getRequest(), $this->getResponse(), ['schema' => 'test']);
+    }
+
+    /**
+     * @depends testUpdate
+     */
+    public function testUpdateWithSchemaDontExist(): void
+    {
+        // Create mock services
+        $ci = Mockery::mock(ContainerInterface::class);
+        $ci->locator = Mockery::mock(ResourceLocatorInterface::class)
+            ->shouldReceive('getResource')
+            ->with('schema://config/bar.json')
+            ->andReturn(false)
+            ->getMock();
+        $ci->cache = Mockery::mock(Cache::class);
+        $ci->config = Mockery::mock(Config::class);
+        $ci->alerts = Mockery::mock(AlertStream::class);
+        $ci->currentUser = Mockery::mock(UserInterface::class);
+        $ci->authorizer = Mockery::mock(AuthorizationManager::class)
+            ->shouldReceive('checkAccess')->with($ci->currentUser, 'update_site_config')->once()->andReturn(true)
+            ->getMock();
+
+        // Get controller
+        $controller = new ConfigManagerController($ci);
+
+        // Get and analyse response
+        $request = $this->getRequest()->withParsedBody([
+            'data' => [
+                'test.foo' => '123bar'
+            ]
+        ]);
+
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('Schema bar not found.');
+        $controller->update($request, $this->getResponse(), ['schema' => 'bar']);
     }
 
     /**
      * @depends testConstructor
      */
-    public function testupdateWithNoAuth(): void
+    public function testUpdate(): void
     {
-        $user = Mockery::mock(UserInterface::class);
-        $this->ci['currentUser'] = $user;
+        $this->setupTestDatabase();
+        $this->refreshDatabase();
 
-        $authorizer = Mockery::mock(AuthorizationManager::class)
-            ->shouldReceive('checkAccess')->with($user, 'update_site_config')->andReturn(false)
+        // Create mock services
+        $ci = Mockery::mock(ContainerInterface::class);
+        $ci->locator = Mockery::mock(ResourceLocatorInterface::class)
+            ->shouldReceive('getResource')
+            ->with('schema://config/test.json')
+            ->andReturn(__DIR__ . '/schema/config/test.json')
+            ->once()
             ->getMock();
-        $this->ci['authorizer'] = $authorizer;
+        $ci->alerts = Mockery::mock(AlertStream::class)
+            ->shouldReceive('addMessageTranslated')->with('success', 'SITE.CONFIG.SAVED')->once()
+            ->getMock();
+        $ci->cache = Mockery::mock(Cache::class)
+            ->shouldReceive('forget')->with('UF_config')->once()
+            ->getMock();
+        $ci->config = Mockery::mock(Config::class)
+            ->shouldReceive('set')->with('test.foo', '123bar')->once()
+            ->shouldReceive('set')->with('test.bar', 'foo123')->once()
+            ->getMock();
+        $ci->currentUser = Mockery::mock(UserInterface::class);
+        $ci->translator = Mockery::mock($this->ci->translator); // Referencing the ci here makes Translator/MessageTranslator automatically depending of the UF version
+        $ci->authorizer = Mockery::mock(AuthorizationManager::class)
+            ->shouldReceive('checkAccess')->with($ci->currentUser, 'update_site_config')->once()->andReturn(true)
+            ->getMock();
 
-        $controller = new ConfigManagerController($this->ci);
+        // Get controller
+        $controller = new ConfigManagerController($ci);
 
-        $this->expectException(ForbiddenException::class);
-        $controller->update($this->getRequest(), $this->getResponse(), []);
+        // Prepare POST data
+        $request = $this->getRequest()->withParsedBody([
+            'data' => [
+                'test.foo' => '123bar',
+                'test.bar' => 'foo123',
+            ]
+        ]);
+
+        // Check the manager
+        $result = Setting::where('key', 'test.foo')->first();
+        $this->assertNull($result);
+
+        $result = $controller->update($request, $this->getResponse(), ['schema' => 'test']);
+
+        // Check assertions
+        $this->assertInstanceOf(ResponseInterface::class, $result);
+        $this->assertSame($result->getStatusCode(), 200);
+        $this->assertJson((string) $result->getBody());
+        $this->assertSame('[]', (string) $result->getBody());
+
+        // Check the manager
+        $result = Setting::where('key', 'test.foo')->first();
+        $this->assertSame('123bar', $result->value);
+    }
+
+    /**
+     * @depends testUpdate
+     */
+    public function testUpdateWithValidationErrors(): void
+    {
+        // Create mock services
+        $ci = Mockery::mock(ContainerInterface::class);
+        $ci->locator = Mockery::mock(ResourceLocatorInterface::class)
+            ->shouldReceive('getResource')
+            ->with('schema://config/test.json')
+            ->andReturn(__DIR__ . '/schema/config/test.json')
+            ->once()
+            ->getMock();
+        $ci->alerts = Mockery::mock(AlertStream::class)
+            ->shouldReceive('addValidationErrors')->once()
+            ->getMock();
+        $ci->cache = Mockery::mock(Cache::class);
+        $ci->config = Mockery::mock(Config::class);
+        $ci->currentUser = Mockery::mock(UserInterface::class);
+        $ci->translator = Mockery::mock($this->ci->translator); // Referencing the ci here makes Translator/MessageTranslator automatically depending of the UF version
+        $ci->authorizer = Mockery::mock(AuthorizationManager::class)
+            ->shouldReceive('checkAccess')->with($ci->currentUser, 'update_site_config')->once()->andReturn(true)
+            ->getMock();
+
+        // Get controller
+        $controller = new ConfigManagerController($ci);
+
+        // Prepare POST data
+        $request = $this->getRequest()->withParsedBody([
+            'data' => [
+                'test.foo' => '123bar',
+            ]
+        ]);
+
+        $result = $controller->update($request, $this->getResponse(), ['schema' => 'test']);
+
+        // Check assertions
+        $this->assertInstanceOf(ResponseInterface::class, $result);
+        $this->assertSame($result->getStatusCode(), 400);
     }
 }
