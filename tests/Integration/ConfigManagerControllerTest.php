@@ -40,12 +40,10 @@ class ConfigManagerControllerTest extends TestCase
     {
         $controller = new ConfigManagerController($this->ci);
         $this->assertInstanceOf(ConfigManagerController::class, $controller);
-
-        return $controller;
     }
 
     /**
-     * @depends testConstructor
+     * @depends testdisplayMain
      */
     public function testdisplayMainWithNoAuth(): void
     {
@@ -174,7 +172,7 @@ class ConfigManagerControllerTest extends TestCase
                 [
                     'schemas' => $expectation,
                 ]
-            )->once()->getMock();
+            )->once()->andReturn($response)->getMock();
 
         // ----
 
@@ -183,7 +181,7 @@ class ConfigManagerControllerTest extends TestCase
 
         // Get and analyse response
         $result = $controller->displayMain($request, $response, []);
-        $this->assertNull($result);
+        $this->assertInstanceOf(ResponseInterface::class, $result);
     }
 
     /**

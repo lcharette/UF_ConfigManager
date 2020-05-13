@@ -59,7 +59,7 @@ class ConfigManagerController extends SimpleController
      * @param ResponseInterface $response
      * @param string[]          $args
      */
-    public function displayMain(RequestInterface $request, ResponseInterface $response, array $args): void
+    public function displayMain(RequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
         /** @var AuthorizationManager */
         $authorizer = $this->ci->authorizer;
@@ -102,7 +102,7 @@ class ConfigManagerController extends SimpleController
         }
 
         // Time to render the page !
-        $this->ci->view->render($response, 'pages/ConfigManager.html.twig', [
+        return $this->ci->view->render($response, 'pages/ConfigManager.html.twig', [
             'schemas' => $schemas,
         ]);
     }

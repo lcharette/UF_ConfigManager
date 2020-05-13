@@ -13,26 +13,22 @@ php:
 
 env:
   jobs:
-    - UF_BRANCH=4.3.* TESTSUITE=Unit
-    - UF_BRANCH=4.4.* TESTSUITE=Unit
-    - UF_BRANCH=dev-develop TESTSUITE=Unit
-    - UF_BRANCH=4.3.* DB=mysql TESTSUITE=Integration
-    - UF_BRANCH=4.4.* DB=mysql TESTSUITE=Integration
-    - UF_BRANCH=dev-develop DB=mysql TESTSUITE=Integration
-    - UF_BRANCH=4.3.* DB=sqlite TESTSUITE=Integration
-    - UF_BRANCH=4.4.* DB=sqlite TESTSUITE=Integration
-    - UF_BRANCH=dev-develop DB=sqlite TESTSUITE=Integration
-    - UF_BRANCH=4.3.* DB=pgsql TESTSUITE=Integration
-    - UF_BRANCH=4.4.* DB=pgsql TESTSUITE=Integration
-    - UF_BRANCH=dev-develop DB=pgsql TESTSUITE=Integration
+    - UF_BRANCH=4.3.* DB=mysql
+    - UF_BRANCH=4.3.* DB=sqlite
+    - UF_BRANCH=4.3.* DB=pgsql
+    - UF_BRANCH=4.4.* DB=mysql
+    - UF_BRANCH=4.4.* DB=sqlite
+    - UF_BRANCH=4.4.* DB=pgsql
+    - UF_BRANCH=dev-develop DB=mysql
+    - UF_BRANCH=dev-develop DB=sqlite
+    - UF_BRANCH=dev-develop DB=pgsql
 
 jobs:
   fast_finish: true
   allow_failures:
-    - env: UF_BRANCH=dev-develop TESTSUITE=Unit
-    - env: UF_BRANCH=dev-develop DB=mysql TESTSUITE=Integration
-    - env: UF_BRANCH=dev-develop DB=pgsql TESTSUITE=Integration
-    - env: UF_BRANCH=dev-develop DB=sqlite TESTSUITE=Integration
+    - env: UF_BRANCH=dev-develop DB=mysql
+    - env: UF_BRANCH=dev-develop DB=sqlite
+    - env: UF_BRANCH=dev-develop DB=pgsql
 
 cache:
   directories:
@@ -58,7 +54,7 @@ before_script:
 
 script:
   # run unit tests
-  - app/vendor/bin/phpunit -c app/sprinkles/ConfigManager/phpunit.xml --coverage-clover=app/sprinkles/ConfigManager/coverage.xml --testsuite $TESTSUITE
+  - app/vendor/bin/phpunit -c app/sprinkles/ConfigManager/phpunit.xml --coverage-clover=app/sprinkles/ConfigManager/coverage.xml
 
 after_failure:
   - cat app/log/userfrosting.log
