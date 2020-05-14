@@ -1,5 +1,17 @@
 # Change Log
 
+## [3.0.0]
+- Bump minimum PHP version to 7.1.
+- Support for FormGenerator 4.0
+- `Config` model renamed to `Setting` to better reflect the table name.
+- `ConfigManager` constructor now accept only the required services instead of the whole CI.
+- Remove `ConfigManaher::set_atomic` method.
+- `ConfigManagerController::update` now throws an error if `$_POST` or `$args` is missing, or if schema is not found.
+- Updated migration definitions for newer version of UserFrosting.
+- Stricter PHP7 type throughout.
+- Added automated testing.
+- Added PHP-CS-Fixer, Travis, PHPStan, StyleCI configuration.
+
 ## [2.1.0]
 - Support for UserFrosting 4.2 / FormGenerator 3.0.0
 
@@ -29,6 +41,7 @@ Updated for UserFrosting v4.1.x
 ## 1.0.0
 - Initial release
 
+[3.0.0]: https://github.com/lcharette/UF_ConfigManager/compare/2.1.0...3.0.0
 [2.1.0]: https://github.com/lcharette/UF_ConfigManager/compare/2.0.4...2.1.0
 [2.0.4]: https://github.com/lcharette/UF_ConfigManager/compare/2.0.3...2.0.4
 [2.0.3]: https://github.com/lcharette/UF_ConfigManager/compare/2.0.2...2.0.3
