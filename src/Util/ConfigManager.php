@@ -1,19 +1,21 @@
 <?php
 
 /*
- * UF Config Manager
+ * UF Config Manager Sprinkle
  *
- * @link https://github.com/lcharette/UF_ConfigManager
- *
- * @copyright Copyright (c) 2019 Louis Charette
- * @license https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
+ * @link      https://github.com/lcharette/UF_ConfigManager
+ * @copyright Copyright (c) 2020 Louis Charette
+ * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
 namespace UserFrosting\Sprinkle\ConfigManager\Util;
 
-use Interop\Container\ContainerInterface;
-use UserFrosting\Sprinkle\ConfigManager\Database\Models\Config;
+use Illuminate\Cache\Repository as Cache;
+use Illuminate\Support\Arr;
+use UserFrosting\Sprinkle\ConfigManager\Database\Models\Setting;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
+use UserFrosting\Support\Repository\Repository as Config;
+use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
  * GastonServicesProvider class.
@@ -21,62 +23,65 @@ use UserFrosting\Support\Repository\Loader\YamlFileLoader;
  */
 class ConfigManager
 {
-    /**
-     * @var ContainerInterface The global container object, which holds all your services.
-     */
-    protected $ci;
+    /** @var Config */
+    protected $config;
+
+    /** @var Cache */
+    protected $cache;
+
+    /** @var ResourceLocatorInterface */
+    protected $locator;
 
     /**
-     * __construct function.
+     * Constructor.
      *
-     * @param ContainerInterface $ci
-     *
-     * @return void
+     * @param ResourceLocatorInterface $locator
+     * @param Cache                    $cache
+     * @param Config                   $config
      */
-    public function __construct(ContainerInterface $ci)
+    public function __construct(ResourceLocatorInterface $locator, Cache $cache, Config $config)
     {
-        $this->ci = $ci;
+        $this->locator = $locator;
+        $this->cache = $cache;
+        $this->config = $config;
     }
 
     /**
-     * __invoke function.
      * Invoke the ConfigManager middleware, merging the db config with the file based one.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request  PSR7 request
      * @param \Psr\Http\Message\ResponseInterface      $response PSR7 response
-     * @param callable                                 $next     Next middleware
+     * @param callable|\Closure                        $next     Next middleware
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function __invoke($request, $response, $next)
     {
-        $this->ci->config->mergeItems(null, $this->fetch());
+        $this->config->mergeItems(null, $this->fetch());
 
         return $next($request, $response);
     }
 
     /**
-     * fetch function.
-     * Fetch all the config from the db and uses the
-     * cache container to store most of thoses setting in the cache system.
+     * Fetch all the config from the db.
+     * Uses the cache container to store most of thoses setting in the cache system.
      *
-     * @return void
+     * @return array<string,string>
      */
-    public function fetch()
+    public function fetch(): array
     {
-        $cache = $this->ci->cache;
-
         // Case n° 1 we don't have cached content. We load everything
-        // Case n° 2 we have cached content, pull that and load the non chanched things to it
-        if (($cached_settings = $cache->get('UF_config')) === null) {
-            $settingsCollection = Config::all();
+        // Case n° 2 we have cached content, get and merge non cached setting into it
+        if (($cached_settings = $this->cache->get('UF_config')) === null) {
+            $settingsCollection = Setting::all();
             $settings = $this->collectionToArray($settingsCollection);
 
-            // Save in cache. The settings that are not cached are not included
-            $cache->forever('UF_config', $this->collectionToArray($settingsCollection, false));
+            // Get an array of the settings that are not marked as cached and save them in cache.
+            $cachedSettings = $this->collectionToArray($settingsCollection, false);
+            $this->cache->forever('UF_config', $cachedSettings);
         } else {
             // We have the cached values, we need to grab the non cached ones
-            $settingsCollection = Config::where('cached', 0);
+            $settingsCollection = Setting::where('cached', false)->get();
             $settings = array_merge_recursive($cached_settings, $this->collectionToArray($settingsCollection));
         }
 
@@ -84,37 +89,34 @@ class ConfigManager
     }
 
     /**
-     * delete function.
      * Removes a configuration option.
      *
      * @param string $key The setting's name
      *
      * @return bool Success
      */
-    public function delete($key)
+    public function delete(string $key): bool
     {
-
         // Get the desired key
-        if (!$setting = Config::where('key', $key)->first()) {
+        if (!$setting = Setting::where('key', $key)->first()) {
             return false;
         }
 
         // Delete time
         $setting->delete();
 
-        // Remove from current laod
-        unset($this->ci->config[$key]);
+        // Remove from current load
+        $this->config->offsetUnset($key);
 
         // Delete cache
         if ($setting->cached) {
-            $this->ci->cache->forget('UF_config');
+            $this->cache->forget('UF_config');
         }
 
         return true;
     }
 
     /**
-     * set function.
      * Sets a setting's value.
      *
      * @param string $key    The setting's name
@@ -124,76 +126,56 @@ class ConfigManager
      *
      * @return bool True if the value was changed, false otherwise
      */
-    public function set($key, $value, $cached = true)
+    public function set(string $key, string $value, bool $cached = true): bool
     {
-        return $this->set_atomic($key, false, $value, $cached);
-    }
-
-    /**
-     * set_atomic function.
-     * Sets a setting's value only if the old_value matches the
-     * current value or the setting does not exist yet.
-     *
-     * @param string $key       The setting's name
-     * @param string $old_value Current configuration value or false to ignore
-     *                          the old value
-     * @param string $new_value The new value
-     * @param bool   $cached    (default: true)      Whether this variable should be cached or if it
-     *                          changes too frequently to be efficiently cached.
-     *
-     * @return bool True if the value was changed, false otherwise
-     */
-    public function set_atomic($key, $old_value, $new_value, $cached = true)
-    {
-
         // Get the desired key
-        $setting = Config::where('key', $key)->first();
+        $setting = Setting::where('key', $key)->first();
 
         if ($setting) {
-            if ($old_value === false || $setting->value == $old_value) {
-                $setting->value = $new_value;
+            if ($setting->value !== $value) {
+                $setting->value = $value;
+                $setting->cached = $cached;
                 $setting->save();
             } else {
                 return false;
             }
         } else {
-            $setting = new Config([
+            $setting = new Setting([
                 'key'    => $key,
-                'value'  => $new_value,
+                'value'  => $value,
                 'cached' => $cached,
             ]);
             $setting->save();
         }
 
         if ($cached) {
-            $this->ci->cache->forget('UF_config');
+            $this->cache->forget('UF_config');
         }
 
-        $this->ci->config[$key] = $new_value;
+        $this->config->set($key, $value);
 
         return true;
     }
 
     /**
-     * getAllShemas function.
      * Get all the config schemas available.
      *
-     * @return void
+     * @return mixed[]
      */
-    public function getAllShemas()
+    public function getAllShemas(): array
     {
         $configSchemas = [];
 
         $loader = new YamlFileLoader([]);
 
         // Get all the location where we can find config schemas
-        $paths = array_reverse($this->ci->locator->findResources('schema://config', true, false));
+        $paths = array_reverse($this->locator->findResources('schema://config', true, false));
 
         // For every location...
         foreach ($paths as $path) {
 
             // Get a list of all the schemas file
-            $files_with_path = glob($path.'/*.json');
+            $files_with_path = glob($path . '/*.json');
 
             // Load every found files
             foreach ($files_with_path as $file) {
@@ -216,20 +198,19 @@ class ConfigManager
     }
 
     /**
-     * collectionToArray function.
-     * This function Expand the db dot notation single level array
-     * to a multi-dimensional array.
+     * This function Expand the db dot notation single level array to a multi-dimensional array.
      *
-     * @param Collection $Collection Eloquent collection
+     * @param iterable<Setting> $collection       Eloquent collection
+     * @param bool              $includeNonCached If false, only settings marked as cached will be returned. True, all settings are returned.
      *
-     * @return array
+     * @return array<string,string>
      */
-    private function collectionToArray($Collection, $include_noncached = true)
+    protected function collectionToArray(iterable $collection, bool $includeNonCached = true): array
     {
         $settings_array = [];
-        foreach ($Collection as $setting) {
-            if ($include_noncached || $setting->cached) {
-                array_set($settings_array, $setting->key, $setting->value);
+        foreach ($collection as $setting) {
+            if ($includeNonCached || $setting->cached) {
+                Arr::set($settings_array, $setting->key, $setting->value);
             }
         }
 

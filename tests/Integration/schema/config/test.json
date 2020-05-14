@@ -1,0 +1,27 @@
+{
+    "name" : "Test Settings",
+    "desc" : "Test Settings for testing",
+
+    "config": {
+        "test.foo" : {
+            "validators" : {},
+            "cached" : true,
+            "form" : {
+                "type" : "text",
+                "label" : "Test Foo",
+                "icon" : ""
+            }
+        },
+        "test.bar" : {
+            "validators" : {
+                "required" : {}
+            },
+            "cached" : false,
+            "form" : {
+                "type" : "text",
+                "label" : "Test Bar",
+                "icon" : ""
+            }
+        }
+    }
+}

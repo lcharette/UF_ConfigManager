@@ -1,31 +1,28 @@
 <?php
 
 /*
- * UF Config Manager
+ * UF Config Manager Sprinkle
  *
- * @link https://github.com/lcharette/UF_ConfigManager
- *
- * @copyright Copyright (c) 2019 Louis Charette
- * @license https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
+ * @link      https://github.com/lcharette/UF_ConfigManager
+ * @copyright Copyright (c) 2020 Louis Charette
+ * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
 namespace UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v101;
 
 use UserFrosting\Sprinkle\Account\Database\Models\Permission;
 use UserFrosting\Sprinkle\Account\Database\Models\Role;
-use UserFrosting\System\Bakery\Migration;
+use UserFrosting\Sprinkle\Core\Database\Migration;
 
 /**
  * Settings permissions migration.
- *
- * @extends Migration
  */
 class SettingsPermissions extends Migration
 {
     /**
      * {@inheritdoc}
      */
-    public $dependencies = [
+    public static $dependencies = [
         '\UserFrosting\Sprinkle\Account\Database\Migrations\v400\PermissionsTable',
         '\UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100\SettingsTable',
     ];
@@ -37,11 +34,14 @@ class SettingsPermissions extends Migration
     {
         // Check if permission exist
         $permissionExist = Permission::where('slug', 'update_site_config')->first();
+
+        // @codeCoverageIgnoreStart
         if ($permissionExist) {
             $this->io->warning("\nPermission slug `update_site_config` already exist. Skipping...");
 
             return;
         }
+        // @codeCoverageIgnoreEnd
 
         // Add default permissions
         $permission = new Permission([

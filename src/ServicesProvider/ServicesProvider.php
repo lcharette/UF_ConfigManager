@@ -1,16 +1,16 @@
 <?php
 
 /*
- * UF Config Manager
+ * UF Config Manager Sprinkle
  *
- * @link https://github.com/lcharette/UF_ConfigManager
- *
- * @copyright Copyright (c) 2019 Louis Charette
- * @license https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
+ * @link      https://github.com/lcharette/UF_ConfigManager
+ * @copyright Copyright (c) 2020 Louis Charette
+ * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
 namespace UserFrosting\Sprinkle\ConfigManager\ServicesProvider;
 
+use Psr\Container\ContainerInterface;
 use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
 
 /**
@@ -22,14 +22,16 @@ class ServicesProvider
     /**
      * Register configManager services.
      *
-     * @param Container $container A DI container implementing ArrayAccess and container-interop.
+     * @param ContainerInterface $container A DI container implementing ArrayAccess and container-interop.
      */
-    public function register($container)
+    public function register(ContainerInterface $container)
     {
         $container['configManager'] = function ($c) {
+
+            // Boot db
             $c->db;
 
-            return new ConfigManager($c);
+            return new ConfigManager($c->locator, $c->cache, $c->config);
         };
     }
 }
