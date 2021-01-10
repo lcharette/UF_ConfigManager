@@ -17,7 +17,7 @@ use UserFrosting\Sprinkle\Core\Database\Models\Model;
  *
  * @property string $key
  * @property string $value
- * @property bool $cached
+ * @property bool   $cached
  */
 class Setting extends Model
 {
