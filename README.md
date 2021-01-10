@@ -4,7 +4,7 @@
 [![Latest Version][releases-badge]][releases]
 [![UserFrosting Version][uf-version]][uf]
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
-[![Travis][travis-badge]][travis]
+[![Build][build-badge]][build]
 [![Codecov][codecov-badge]][codecov]
 [![StyleCI][styleci-badge]][styleci]
 
@@ -14,8 +14,8 @@
 [releases-badge]: https://img.shields.io/github/release/lcharette/UF_ConfigManager.svg
 [uf-version]: https://img.shields.io/badge/UserFrosting->=%204.3-brightgreen.svg
 [uf]: https://github.com/userfrosting/UserFrosting
-[travis]: https://travis-ci.org/lcharette/UF_ConfigManager
-[travis-badge]: https://travis-ci.org/lcharette/UF_ConfigManager.svg?branch=master
+[build]: https://github.com/lcharette/UF_ConfigManager/actions?query=workflow%3ABuild
+[build-badge]: https://github.com/lcharette/UF_ConfigManager/workflows/Build/badge.svg?branch=master
 [codecov]: https://codecov.io/gh/lcharette/UF_ConfigManager
 [codecov-badge]: https://codecov.io/gh/lcharette/UF_ConfigManager/branch/master/graph/badge.svg
 [styleci]: https://styleci.io/repos/76127967
