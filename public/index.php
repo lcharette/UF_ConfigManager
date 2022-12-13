@@ -8,8 +8,6 @@
  * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
-// namespace UserFrosting\Public;
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Workaround to get php built-in server to access legacy assets
@@ -18,8 +16,8 @@ if (PHP_SAPI == 'cli-server') {
     $_SERVER['SCRIPT_NAME'] = '/index.php';
 }
 
-use UserFrosting\Sprinkle\ConfigManager\ConfigManager;
+use UserFrosting\App\App;
 use UserFrosting\UserFrosting;
 
-$uf = new UserFrosting(ConfigManager::class);
+$uf = new UserFrosting(App::class);
 $uf->run();

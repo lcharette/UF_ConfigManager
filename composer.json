@@ -41,7 +41,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "UserFrosting\\Sprinkle\\ConfigManager\\Tests\\": "app/tests/"
+            "UserFrosting\\Sprinkle\\ConfigManager\\Tests\\": "app/tests/",
+            "UserFrosting\\App\\": "public/src/"
         }
     }
 }

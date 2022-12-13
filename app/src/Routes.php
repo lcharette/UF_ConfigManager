@@ -19,7 +19,6 @@ class Routes implements RouteDefinitionInterface
 {
     public function register(App $app): void
     {
-        $app->redirect('/', '/dashboard')->setName('index');
         $app->group('/settings', function (RouteCollectorProxy $group) {
             $group->get('', [ConfigManagerController::class, 'displayMain'])->setName('ConfigManager');
             $group->post('/{schema}', [ConfigManagerController::class, 'update'])->setName('ConfigManager.save');
