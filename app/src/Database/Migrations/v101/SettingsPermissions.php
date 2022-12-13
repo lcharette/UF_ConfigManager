@@ -10,8 +10,10 @@
 
 namespace UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v101;
 
+use UserFrosting\Sprinkle\Account\Database\Migrations\v400\PermissionsTable;
 use UserFrosting\Sprinkle\Account\Database\Models\Permission;
 use UserFrosting\Sprinkle\Account\Database\Models\Role;
+use UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100\SettingsTable;
 use UserFrosting\Sprinkle\Core\Database\Migration;
 
 /**
@@ -23,14 +25,14 @@ class SettingsPermissions extends Migration
      * {@inheritdoc}
      */
     public static $dependencies = [
-        '\UserFrosting\Sprinkle\Account\Database\Migrations\v400\PermissionsTable',
-        '\UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100\SettingsTable',
+        PermissionsTable::class,
+        SettingsTable::class,
     ];
 
     /**
      * {@inheritdoc}
      */
-    public function up()
+    public function up(): void
     {
         // Check if permission exist
         $permissionExist = Permission::where('slug', 'update_site_config')->first();
@@ -63,7 +65,7 @@ class SettingsPermissions extends Migration
     /**
      * {@inheritdoc}
      */
-    public function down()
+    public function down(): void
     {
         $permissions = Permission::where('slug', 'update_site_config')->get();
         foreach ($permissions as $permission) {

@@ -20,8 +20,7 @@ use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager;
 use UserFrosting\Sprinkle\Account\Database\Models\Interfaces\UserInterface;
-use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
-use UserFrosting\Sprinkle\Core\Controller\SimpleController;
+use UserFrosting\Sprinkle\ConfigManager\Middlewares\ConfigManager;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\NotFoundException;
@@ -33,23 +32,15 @@ use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
  *
  * Controller class for /settings/* URLs. Generate the interface required to modify the sites settings and saving the changes
  */
-class ConfigManagerController extends SimpleController
+class ConfigManagerController
 {
-    /**
-     * @var ConfigManager Hold the ConfigManager class that handle setting the config and getting the config schema
-     *                    Note that we don't interact with the `Config` db model directly since it can't handle the cache
-     */
-    protected $manager;
-
     /**
      * Create a new ConfigManagerController object.
      *
-     * @param ContainerInterface $ci
+     * @param ConfigManager $manager
      */
-    public function __construct(ContainerInterface $ci)
+    public function __construct(protected ConfigManager $manager)
     {
-        $this->ci = $ci;
-        $this->manager = new ConfigManager($ci->locator, $ci->cache, $ci->config);
     }
 
     /**
@@ -77,7 +68,6 @@ class ConfigManagerController extends SimpleController
 
         // Parse each of them to get it's content
         foreach ($schemas as $i => $schemaData) {
-
             // Set the schemam, the validator and the form
             $schema = new RequestSchemaRepository($schemaData['config']);
             $validator = new JqueryValidationAdapter($schema, $this->ci->translator);
@@ -179,7 +169,6 @@ class ConfigManagerController extends SimpleController
         // we can use the `$data` that's still intact. The validator doesn't change the data
         // Next, update each config
         foreach ($data as $key => $value) {
-
             // We need to access the $schemaData to find if we need to cache this one
             $cached = (isset($schemaData['config'][$key]['cached'])) ? $schemaData['config'][$key]['cached'] : true;
 

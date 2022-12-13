@@ -12,20 +12,36 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-        "lcharette/uf_formgenerator": "^2.2.10 || ^3.0.0 || ^4.0.0"
+        "php": "^8.0",
+        "lcharette/uf_formgenerator": "^5.0",
+        "userfrosting/framework": "^5.0.0@alpha",
+        "userfrosting/sprinkle-core": "^5.0.0@alpha",
+        "userfrosting/sprinkle-account": "^5.0.0@alpha",
+        "userfrosting/sprinkle-admin": "^5.0.0@alpha",
+        "userfrosting/theme-adminlte": "^5.0.0@alpha"
     },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpstan/phpstan": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-mockery": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.0",
+        "phpunit/phpunit": "^9.5",
+        "mockery/mockery": "^1.2",
+        "league/factory-muffin": "^3.0",
+        "league/factory-muffin-faker": "^2.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "UserFrosting\\Sprinkle\\ConfigManager\\": "src/"
+            "UserFrosting\\Sprinkle\\ConfigManager\\": "app/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "UserFrosting\\Sprinkle\\ConfigManager\\Tests\\": "tests/"
+            "UserFrosting\\Sprinkle\\ConfigManager\\Tests\\": "app/tests/"
         }
-    },
-    "extra": {
-        "installer-name": "ConfigManager"
     }
 }

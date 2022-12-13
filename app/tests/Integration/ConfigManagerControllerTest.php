@@ -17,6 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Twig;
 use UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager;
 use UserFrosting\Sprinkle\Account\Database\Models\Interfaces\UserInterface;
+use UserFrosting\Sprinkle\ConfigManager\ConfigManager;
 use UserFrosting\Sprinkle\ConfigManager\Controller\ConfigManagerController;
 use UserFrosting\Sprinkle\ConfigManager\Database\Models\Setting;
 use UserFrosting\Sprinkle\Core\Alert\AlertStream;
@@ -27,7 +28,7 @@ use UserFrosting\Sprinkle\Core\Tests\withController;
 use UserFrosting\Support\Exception\ForbiddenException;
 use UserFrosting\Support\Exception\NotFoundException;
 use UserFrosting\Support\Repository\Repository as Config;
-use UserFrosting\Tests\TestCase;
+use UserFrosting\Testing\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 class ConfigManagerControllerTest extends TestCase
@@ -35,6 +36,8 @@ class ConfigManagerControllerTest extends TestCase
     use withController;
     use TestDatabase;
     use RefreshDatabase;
+
+    protected string $mainSprinkle = ConfigManager::class;
 
     public function testConstructor()
     {

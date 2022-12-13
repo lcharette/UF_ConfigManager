@@ -8,7 +8,7 @@
  * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
-namespace UserFrosting\Sprinkle\ConfigManager\Util;
+namespace UserFrosting\Sprinkle\ConfigManager\Middlewares;
 
 use Illuminate\Cache\Repository as Cache;
 use Illuminate\Support\Arr;
@@ -18,32 +18,22 @@ use UserFrosting\Support\Repository\Repository as Config;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
- * GastonServicesProvider class.
- * Registers services for the account sprinkle, such as currentUser, etc.
+ * Middleware to merge database config with file config on every request.
  */
 class ConfigManager
 {
-    /** @var Config */
-    protected $config;
-
-    /** @var Cache */
-    protected $cache;
-
-    /** @var ResourceLocatorInterface */
-    protected $locator;
-
     /**
-     * Constructor.
+     * Inject services.
      *
      * @param ResourceLocatorInterface $locator
      * @param Cache                    $cache
      * @param Config                   $config
      */
-    public function __construct(ResourceLocatorInterface $locator, Cache $cache, Config $config)
-    {
-        $this->locator = $locator;
-        $this->cache = $cache;
-        $this->config = $config;
+    public function __construct(
+        protected ResourceLocatorInterface $locator,
+        protected Cache $cache,
+        protected Config $config
+    ) {
     }
 
     /**
@@ -173,13 +163,11 @@ class ConfigManager
 
         // For every location...
         foreach ($paths as $path) {
-
             // Get a list of all the schemas file
             $files_with_path = glob($path . '/*.json');
 
             // Load every found files
             foreach ($files_with_path as $file) {
-
                 // Load the file content
                 $schema = $loader->loadFile($file);
 

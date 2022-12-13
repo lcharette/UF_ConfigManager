@@ -21,7 +21,7 @@ class SettingsTable extends Migration
     /**
      * {@inheritdoc}
      */
-    public function up()
+    public function up(): void
     {
         if (!$this->schema->hasTable('settings')) {
             $this->schema->create('settings', function (Blueprint $table) {
@@ -41,7 +41,7 @@ class SettingsTable extends Migration
     /**
      * {@inheritdoc}
      */
-    public function down()
+    public function down(): void
     {
         $this->schema->drop('settings');
     }

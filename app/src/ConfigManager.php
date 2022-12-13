@@ -1,0 +1,102 @@
+<?php
+
+/*
+ * UF Config Manager Sprinkle
+ *
+ * @link      https://github.com/lcharette/UF_ConfigManager
+ * @copyright Copyright (c) 2020 Louis Charette
+ * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
+ */
+
+namespace UserFrosting\Sprinkle\ConfigManager;
+
+use UserFrosting\Sprinkle\Admin\Admin;
+use UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100\SettingsTable;
+use UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v101\SettingsPermissions;
+use UserFrosting\Sprinkle\ConfigManager\Middlewares\ConfigManager as ConfigManagerMiddleware;
+use UserFrosting\Sprinkle\Core\Sprinkle\Recipe\MigrationRecipe;
+use UserFrosting\Sprinkle\SprinkleRecipe;
+use UserFrosting\Theme\AdminLTE\AdminLTE;
+
+class ConfigManager implements SprinkleRecipe, MigrationRecipe
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getName(): string
+    {
+        return 'Config Manager';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath(): string
+    {
+        return __DIR__ . '/../';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBakeryCommands(): array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSprinkles(): array
+    {
+        return [
+            Admin::class,
+            AdminLTE::class,
+        ];
+    }
+
+    /**
+     * Returns a list of routes definition in PHP files.
+     *
+     * @return string[]
+     */
+    public function getRoutes(): array
+    {
+        return [
+            Routes::class,
+        ];
+    }
+
+    /**
+     * Returns a list of all PHP-DI services/container definitions files.
+     *
+     * @return string[]
+     */
+    public function getServices(): array
+    {
+        return [];
+    }
+
+    /**
+     * Returns a list of all Middlewares classes.
+     *
+     * @return \Psr\Http\Server\MiddlewareInterface[]
+     */
+    public function getMiddlewares(): array
+    {
+        return [
+            // ConfigManagerMiddleware::class,
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getMigrations(): array
+    {
+        return [
+            SettingsTable::class,
+            SettingsPermissions::class,
+        ];
+    }
+}

@@ -10,8 +10,8 @@
 
 namespace UserFrosting\Sprinkle\ConfigManager\Tests\Integration;
 
-use Mockery;
 use Illuminate\Cache\Repository as Cache;
+use Mockery;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use UserFrosting\Sprinkle\ConfigManager\Database\Models\Setting;
