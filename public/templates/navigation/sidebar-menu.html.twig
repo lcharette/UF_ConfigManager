@@ -1,0 +1,8 @@
+{% extends "@admin-sprinkle/navigation/sidebar-menu.html.twig" %}
+
+{% block navigation %}
+    {{ parent() }}
+    <li>
+        <a href="{{site.uri.public}}/settings"><i class="fas fa-cogs fa-fw"></i> <span>{{ translate("SITE.CONFIG.MANAGER") }}</span></a>
+    </li>
+{% endblock %}
