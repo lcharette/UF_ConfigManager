@@ -13,15 +13,16 @@ namespace UserFrosting\Sprinkle\ConfigManager;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 use UserFrosting\Routes\RouteDefinitionInterface;
-use UserFrosting\Sprinkle\ConfigManager\Controller\ConfigManagerController;
+use UserFrosting\Sprinkle\ConfigManager\Controller\DisplayPage;
+use UserFrosting\Sprinkle\ConfigManager\Controller\UpdateSchema;
 
 class Routes implements RouteDefinitionInterface
 {
     public function register(App $app): void
     {
         $app->group('/settings', function (RouteCollectorProxy $group) {
-            $group->get('', [ConfigManagerController::class, 'displayMain'])->setName('ConfigManager');
-            $group->post('/{schema}', [ConfigManagerController::class, 'update'])->setName('ConfigManager.save');
+            $group->get('', DisplayPage::class)->setName('ConfigManager');
+            $group->post('/{schema}', UpdateSchema::class)->setName('ConfigManager.save');
         });
     }
 }

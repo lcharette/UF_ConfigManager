@@ -15,6 +15,7 @@ use UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100\SettingsTable;
 use UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v101\SettingsPermissions;
 use UserFrosting\Sprinkle\ConfigManager\Middlewares\ConfigManager as ConfigManagerMiddleware;
 use UserFrosting\Sprinkle\Core\Sprinkle\Recipe\MigrationRecipe;
+use UserFrosting\Sprinkle\FormGenerator\FormGenerator;
 use UserFrosting\Sprinkle\SprinkleRecipe;
 use UserFrosting\Theme\AdminLTE\AdminLTE;
 
@@ -52,6 +53,7 @@ class ConfigManager implements SprinkleRecipe, MigrationRecipe
         return [
             Admin::class,
             AdminLTE::class,
+            FormGenerator::class,
         ];
     }
 

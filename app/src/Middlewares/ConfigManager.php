@@ -152,7 +152,7 @@ class ConfigManager
      *
      * @return mixed[]
      */
-    public function getAllShemas(): array
+    public function getAllSchemas(): array
     {
         $configSchemas = [];
 

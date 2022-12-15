@@ -28,8 +28,6 @@ class Setting extends Model
 
     /**
      * {@inheritdoc}
-     *
-     * @var string[]
      */
     protected $casts = [
         'cached' => 'boolean',
@@ -43,9 +41,4 @@ class Setting extends Model
         'value',
         'cached',
     ];
-
-    /**
-     * @var bool Enable timestamps for Users.
-     */
-    public $timestamps = true;
 }
