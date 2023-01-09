@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UF Config Manager Sprinkle
  *
@@ -15,13 +17,16 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use UserFrosting\Alert\AlertStream;
 use UserFrosting\Fortress\RequestDataTransformer;
+use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\I18n\Translator;
 use UserFrosting\Sprinkle\Account\Authenticate\Authenticator;
 use UserFrosting\Sprinkle\Account\Exceptions\ForbiddenException;
-use UserFrosting\Sprinkle\Admin\Exceptions\NotFoundException;
+use UserFrosting\Sprinkle\ConfigManager\Exceptions\MissingDataException;
+use UserFrosting\Sprinkle\ConfigManager\Exceptions\SchemaNotFoundException;
 use UserFrosting\Sprinkle\ConfigManager\Middlewares\ConfigManager;
+use UserFrosting\Sprinkle\Core\Exceptions\ValidationException;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
@@ -48,49 +53,43 @@ class UpdateSchema
     /**
      * Processes the request to save the settings to the db.
      *
-     * @param string   $schema
+     * @param string   $schemaName
      * @param Request  $request
      * @param Response $response
      *
      * @return Response
      */
-    public function __invoke(string $schema, Request $request, Response $response): Response
+    public function __invoke(string $schemaName, Request $request, Response $response): Response
     {
-        if (!$this->authenticator->checkAccess('update_site_config')) {
-            throw new ForbiddenException();
-        }
+        $this->validateAccess();
+        $this->handle($request, $schemaName);
+        $payload = json_encode([], JSON_THROW_ON_ERROR);
+        $response->getBody()->write($payload);
 
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Handle the request.
+     *
+     * @param Request $request
+     */
+    protected function handle(Request $request, string $schemaName): void
+    {
         // Request POST data
-        $post = $request->getParsedBody();
-
-        // Make sure args has schema
-        if (isset($args['schema'])) {
-            $schemaName = $args['schema'];
-        } else {
-            throw new NotFoundException('Schema not defined.');
-        }
+        $post = (array) $request->getParsedBody();
 
         // Make sure post has data
-        if (isset($post['data'])) {
-            $data = $post['data'];
-        } else {
-            throw new NotFoundException('Data not found.');
+        if (!isset($post['data'])) {
+            throw new MissingDataException();
         }
 
-        // So we first get the schema data. Load file instead of in constructor as it's easier to mock/test
-        if (!$file = $this->locator->getResource('schema://config/' . $schemaName . '.json')) {
-            throw new NotFoundException("Schema $schemaName not found.");
-        }
-        $loader = new YamlFileLoader([]);
-        $schemaData = $loader->loadFile($file);
+        // Load the request schema
+        $schema = $this->getSchema($schemaName);
 
-        // We can't pass the file directly to RequestSchema because it's a custom one
-        // So we create a new empty RequestSchemaRepository and feed it the `config` part of our custom schema
-        $schema = new RequestSchemaRepository($schemaData['config']);
-
-        // Transform the data
+        // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
-        $data = $transformer->transform($data);
+        $data = $transformer->transform($post['data']);
 
         // We change the dot notation of our elements to a multidimensional array
         // This is required for the fields (but not for the schema) because the validator doesn't use the
@@ -100,14 +99,8 @@ class UpdateSchema
             Arr::set($dataArray, $key, $value);
         }
 
-        // We validate the data array against the schema
-        $validator = new ServerSideValidator($schema, $this->translator);
-        if (!$validator->validate($dataArray)) {
-            $ms->addValidationErrors($validator);
-
-            // TODO : Throw Error
-            return $response->withStatus(400);
-        }
+        // Validate request data
+        $this->validateData($schema, $dataArray);
 
         // The data is now validated. Instead or switching back the array to dot notation,
         // we can use the `$data` that's still intact. The validator doesn't change the data
@@ -122,10 +115,60 @@ class UpdateSchema
 
         //Success message!
         $this->alerts->addMessageTranslated('success', 'SITE.CONFIG.SAVED');
+    }
 
-        $payload = json_encode([], JSON_THROW_ON_ERROR);
-        $response->getBody()->write($payload);
+    /**
+     * Validate access to the page.
+     *
+     * @throws ForbiddenException
+     */
+    protected function validateAccess(): void
+    {
+        if (!$this->authenticator->checkAccess('update_site_config')) {
+            throw new ForbiddenException();
+        }
+    }
 
-        return $response->withHeader('Content-Type', 'application/json');
+    /**
+     * Load the request schema.
+     *
+     * @return RequestSchemaInterface
+     */
+    protected function getSchema(string $schemaName): RequestSchemaInterface
+    {
+        // So we first get the schema data. Load file instead of in constructor as it's easier to mock/test
+        $file = $this->locator->getResource('schema://config/' . $schemaName . '.json');
+        if ($file === null) {
+            $e = new SchemaNotFoundException();
+            $e->setSchema($schemaName);
+
+            throw $e;
+        }
+
+        $loader = new YamlFileLoader([]);
+        $schemaData = $loader->loadFile((string) $file);
+
+        // We can't pass the file directly to RequestSchema because it's a custom one
+        // So we create a new empty RequestSchemaRepository and feed it the `config` part of our custom schema
+        $schema = new RequestSchemaRepository($schemaData['config']);
+
+        return $schema;
+    }
+
+    /**
+     * Validate request POST data.
+     *
+     * @param RequestSchemaInterface $schema
+     * @param mixed[]                $data
+     */
+    protected function validateData(RequestSchemaInterface $schema, array $data): void
+    {
+        $validator = new ServerSideValidator($schema, $this->translator);
+        if ($validator->validate($data) === false && is_array($validator->errors())) {
+            $e = new ValidationException();
+            $e->addErrors($validator->errors());
+
+            throw $e;
+        }
     }
 }

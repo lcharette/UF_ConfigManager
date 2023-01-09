@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UF Config Manager Sprinkle
  *
@@ -8,30 +10,24 @@
  * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
-namespace UserFrosting\Sprinkle\ConfigManager\Tests\Integration;
+namespace UserFrosting\Sprinkle\ConfigManager\Tests;
 
 use Illuminate\Cache\Repository as Cache;
 use Mockery;
-use Psr\Http\Message\RequestInterface;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use UserFrosting\Config\Config;
 use UserFrosting\Sprinkle\ConfigManager\Database\Models\Setting;
-use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
-use UserFrosting\Sprinkle\Core\Tests\RefreshDatabase;
-use UserFrosting\Sprinkle\Core\Tests\TestDatabase;
-use UserFrosting\Support\Repository\Repository as Config;
-use UserFrosting\Tests\TestCase;
+use UserFrosting\Sprinkle\ConfigManager\Middlewares\ConfigManager;
+use UserFrosting\Sprinkle\Core\Testing\RefreshDatabase;
+use UserFrosting\UniformResourceLocator\ResourceLocator;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 class ConfigManagerTest extends TestCase
 {
-    use TestDatabase;
     use RefreshDatabase;
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        Mockery::close();
-    }
+    use MockeryPHPUnitIntegration;
 
     public function testConstructor(): void
     {
@@ -40,14 +36,12 @@ class ConfigManagerTest extends TestCase
         $config = Mockery::mock(Config::class);
 
         $manager = new ConfigManager($locator, $cache, $config);
-        $this->assertInstanceOf(ConfigManager::class, $manager);
+        $this->assertInstanceOf(ConfigManager::class, $manager); // @phpstan-ignore-line
     }
 
-    /**
-     * @depends testConstructor
-     */
-    public function testgetAllShemas(): void
+    public function testGetAllSchemas(): void
     {
+        /** @var ResourceLocatorInterface */
         $locator = Mockery::mock(ResourceLocatorInterface::class)
             ->shouldReceive('findResources')
             ->with('schema://config', true, false)
@@ -57,19 +51,18 @@ class ConfigManagerTest extends TestCase
         $config = Mockery::mock(Config::class);
 
         $manager = new ConfigManager($locator, $cache, $config);
-        $schema = $manager->getAllShemas();
+        $schema = $manager->getAllSchemas();
 
-        $this->assertIsArray($schema);
         $this->assertSame([
-            'foo' => [
-                'name'   => 'Foo Settings',
-                'desc'   => 'Foo Settings for testing',
-                'config' => [
+            'foo'  => [
+                'name'     => 'Foo Settings',
+                'desc'     => 'Foo Settings for testing',
+                'config'   => [
                     'foo.foo' => [
                         'validators' => [
                         ],
-                        'cached' => true,
-                        'form'   => [
+                        'cached'     => true,
+                        'form'       => [
                             'type'  => 'text',
                             'label' => 'Foo Foo',
                             'icon'  => '',
@@ -78,8 +71,8 @@ class ConfigManagerTest extends TestCase
                     'foo.bar' => [
                         'validators' => [
                         ],
-                        'cached' => false,
-                        'form'   => [
+                        'cached'     => false,
+                        'form'       => [
                             'type'  => 'text',
                             'label' => 'Foo Bar',
                             'icon'  => '',
@@ -89,14 +82,14 @@ class ConfigManagerTest extends TestCase
                 'filename' => 'foo',
             ],
             'test' => [
-                'name'   => 'Test Settings',
-                'desc'   => 'Test Settings for testing',
-                'config' => [
+                'name'     => 'Test Settings',
+                'desc'     => 'Test Settings for testing',
+                'config'   => [
                     'test.foo' => [
                         'validators' => [
                         ],
-                        'cached' => true,
-                        'form'   => [
+                        'cached'     => true,
+                        'form'       => [
                             'type'  => 'text',
                             'label' => 'Test Foo',
                             'icon'  => '',
@@ -106,8 +99,8 @@ class ConfigManagerTest extends TestCase
                         'validators' => [
                             'required' => [],
                         ],
-                        'cached' => false,
-                        'form'   => [
+                        'cached'     => false,
+                        'form'       => [
                             'type'  => 'text',
                             'label' => 'Test Bar',
                             'icon'  => '',
@@ -119,18 +112,18 @@ class ConfigManagerTest extends TestCase
         ], $schema);
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testSetWithoutCache(): void
     {
-        $this->setupTestDatabase();
         $this->refreshDatabase();
 
         $locator = Mockery::mock(ResourceLocatorInterface::class);
+
+        /** @var Cache */
         $cache = Mockery::mock(Cache::class)
             ->shouldNotReceive('forget')
             ->getMock();
+
+        /** @var Config */
         $config = Mockery::mock(Config::class)
             ->shouldReceive('set')->with('foo', 'bar')->once()
             ->shouldReceive('set')->with('foo', 'rab')->once()
@@ -153,23 +146,26 @@ class ConfigManagerTest extends TestCase
         // Get the actual table to make sure it worked
         $settings = Setting::all();
         $this->assertCount(1, $settings);
-        $this->assertSame('foo', $settings->first()->key);
-        $this->assertSame('rab', $settings->first()->value);
-        $this->assertSame(false, $settings->first()->cached);
+
+        /** @var Setting */
+        $first = $settings->first();
+        $this->assertSame('foo', $first->key);
+        $this->assertSame('rab', $first->value);
+        $this->assertSame(false, $first->cached);
     }
 
-    /**
-     * @depends testSetWithoutCache
-     */
     public function testSetWithCache(): void
     {
-        $this->setupTestDatabase();
         $this->refreshDatabase();
 
         $locator = Mockery::mock(ResourceLocatorInterface::class);
+
+        /** @var Cache */
         $cache = Mockery::mock(Cache::class)
             ->shouldReceive('forget')->with('UF_config')->once()
             ->getMock();
+
+        /** @var Config */
         $config = Mockery::mock(Config::class)
             ->shouldReceive('set')->with('foo', 'bar')->once()
             ->getMock();
@@ -183,23 +179,26 @@ class ConfigManagerTest extends TestCase
         // Get the actual table to make sure it worked
         $settings = Setting::all();
         $this->assertCount(1, $settings);
-        $this->assertSame('foo', $settings->first()->key);
-        $this->assertSame('bar', $settings->first()->value);
-        $this->assertSame(true, $settings->first()->cached);
+
+        /** @var Setting */
+        $first = $settings->first();
+        $this->assertSame('foo', $first->key);
+        $this->assertSame('bar', $first->value);
+        $this->assertSame(true, $first->cached);
     }
 
-    /**
-     * @depends testSetWithCache
-     */
     public function testRemove(): void
     {
-        $this->setupTestDatabase();
         $this->refreshDatabase();
 
         $locator = Mockery::mock(ResourceLocatorInterface::class);
+
+        /** @var Cache */
         $cache = Mockery::mock(Cache::class)
             ->shouldReceive('forget')->with('UF_config')->twice()
             ->getMock();
+
+        /** @var Config */
         $config = Mockery::mock(Config::class)
             ->shouldReceive('set')->with('foo', 'bar')->once()
             ->shouldReceive('offsetUnset')->with('foo')->once()
@@ -217,51 +216,55 @@ class ConfigManagerTest extends TestCase
         $this->assertTrue($result);
     }
 
-    /**
-     * @depends testSetWithCache
-     */
     public function testRemoveActual(): void
     {
-        $this->setupTestDatabase();
         $this->refreshDatabase();
 
-        /** @var Config */
-        $config = $this->ci->config;
+        /** @var ResourceLocator */
+        $locator = $this->ci->get(ResourceLocator::class);
 
-        $manager = new ConfigManager($this->ci->locator, $this->ci->cache, $config);
+        /** @var Cache */
+        $cache = $this->ci->get(Cache::class);
+
+        /** @var Config */
+        $config = $this->ci->get(Config::class);
+
+        $manager = new ConfigManager($locator, $cache, $config);
 
         // Start with non existing setting in the db
         $this->assertFalse($manager->delete('foo'));
 
         // Start with no config
-        $this->assertNull($config['foo']);
+        $this->assertNull($config->get('foo'));
 
         // Set once
         $manager->set('foo', 'bar');
 
         // Make sure config is now set
-        $this->assertSame('bar', $config['foo']);
+        $this->assertSame('bar', $config->get('foo'));
 
         // Delete it
         $result = $manager->delete('foo');
-        $this->assertTrue($result);
+        $this->assertTrue($result); // @phpstan-ignore-line False positive
 
         // Make sure delete worked with no config
-        $this->assertNull($config['foo']);
+        $this->assertNull($config->get('foo'));
     }
 
-    /**
-     * @depends testSetWithCache
-     */
-    public function testfetchActual(): void
+    public function testFetchActual(): void
     {
-        $this->setupTestDatabase();
         $this->refreshDatabase();
 
-        /** @var Cache */
-        $cache = $this->ci->cache;
+        /** @var ResourceLocator */
+        $locator = $this->ci->get(ResourceLocator::class);
 
-        $manager = new ConfigManager($this->ci->locator, $cache, $this->ci->config);
+        /** @var Cache */
+        $cache = $this->ci->get(Cache::class);
+
+        /** @var Config */
+        $config = $this->ci->get(Config::class);
+
+        $manager = new ConfigManager($locator, $cache, $config);
 
         // No result by default
         $this->assertNull($cache->get('UF_config'));
@@ -283,8 +286,8 @@ class ConfigManagerTest extends TestCase
         // Cache won't be flushed
         $this->assertEquals(['foo' => 'bar'], $cache->get('UF_config'));
 
-        // Refetch, this time 'bar' will be refetched, but foo will be loaded from cache.
-        // Result is same, this can only be seen by codecoverage & other unit tests.
+        // Refetch, this time 'bar' will be re-fetched, but foo will be loaded from cache.
+        // Result is same, this can only be seen by code coverage & other unit tests.
         $this->assertEquals(['foo' => 'bar', 'bar' => '321'], $manager->fetch());
         $this->assertEquals(['foo' => 'bar'], $cache->get('UF_config'));
 
@@ -294,7 +297,7 @@ class ConfigManagerTest extends TestCase
         // Cache will be flushed by set, and is now empty
         $this->assertNull($cache->get('UF_config'));
 
-        // Refetch, this time everything will be refetched as cache is empty.
+        // Refetch, this time everything will be re-fetched as cache is empty.
         $this->assertEquals(['foo' => 'rab', 'bar' => '321'], $manager->fetch());
         $this->assertEquals(['foo' => 'rab'], $cache->get('UF_config')); // Bar is still not cached !
 
@@ -311,13 +314,17 @@ class ConfigManagerTest extends TestCase
     {
         $locator = Mockery::mock(ResourceLocatorInterface::class);
         $cache = Mockery::mock(Cache::class);
-        $request = Mockery::mock(RequestInterface::class);
-        $response = Mockery::mock(ResponseInterface::class);
-
         $config = Mockery::mock(Config::class)
             ->shouldReceive('mergeItems')->with(null, ['foo' => 'bar'])->once()
             ->getMock();
 
+        /** @var ServerRequestInterface */
+        $request = Mockery::mock(ServerRequestInterface::class);
+
+        /** @var ResponseInterface */
+        $response = Mockery::mock(ResponseInterface::class);
+
+        /** @var ConfigManager */
         $manager = Mockery::mock(ConfigManager::class, [$locator, $cache, $config])
             ->makePartial()
             ->shouldReceive('fetch')->once()->andReturn(['foo' => 'bar'])
@@ -330,23 +337,31 @@ class ConfigManagerTest extends TestCase
             return 'foo';
         };
 
-        $result = $manager->__invoke($request, $response, $next);
+        $result = $manager($request, $response, $next);
 
-        $this->assertSame('foo', $result);
+        $this->assertSame('foo', $result); // @phpstan-ignore-line Overwritten in $next callable
     }
 
     public function testInvokeWithDB(): void
     {
-        $this->setupTestDatabase();
         $this->refreshDatabase();
 
-        $request = Mockery::mock(RequestInterface::class);
+        $request = Mockery::mock(ServerRequestInterface::class);
         $response = Mockery::mock(ResponseInterface::class);
 
-        // Flusch cache to prevent issue with previous tests
-        $this->ci->cache->forget('UF_config');
+        /** @var ResourceLocator */
+        $locator = $this->ci->get(ResourceLocator::class);
 
-        $manager = new ConfigManager($this->ci->locator, $this->ci->cache, $this->ci->config);
+        /** @var Cache */
+        $cache = $this->ci->get(Cache::class);
+
+        /** @var Config */
+        $config = $this->ci->get(Config::class);
+
+        // Flush cache to prevent issue with previous tests
+        $cache->forget('UF_config');
+
+        $manager = new ConfigManager($locator, $cache, $config);
 
         $setting = new Setting(['key' => 'foo', 'value'  => 'bar', 'cached' => true]);
         $setting->save();
@@ -354,13 +369,13 @@ class ConfigManagerTest extends TestCase
         $setting = new Setting(['key' => 'bar', 'value'  => '123', 'cached' => false]);
         $setting->save();
 
-        $this->assertNull($this->ci->config->get('foo'));
-        $this->assertNull($this->ci->config->get('bar'));
+        $this->assertNull($config->get('foo'));
+        $this->assertNull($config->get('bar'));
 
         $manager($request, $response, function ($request, $response) {
         });
 
-        $this->assertSame('bar', $this->ci->config->get('foo'));
-        $this->assertSame('123', $this->ci->config->get('bar'));
+        $this->assertSame('bar', $config->get('foo'));
+        $this->assertSame('123', $config->get('bar'));
     }
 }

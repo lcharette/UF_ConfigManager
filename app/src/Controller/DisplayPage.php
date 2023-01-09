@@ -83,7 +83,7 @@ class DisplayPage
             $schemas[$i]['validators'] = $validator->rules('json', true);
 
             // Add the save url for that schema
-            $schemas[$i]['formAction'] = $this->routeParser->urlFor('ConfigManager.save', ['schema' => $schemaData['filename']]);
+            $schemas[$i]['formAction'] = $this->routeParser->urlFor('ConfigManager.save', ['schemaName' => $schemaData['filename']]);
         }
 
         // Time to render the page !

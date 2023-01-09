@@ -1,8 +1,7 @@
-# Configuration Manager Sprinkle for [UserFrosting 4](https://www.userfrosting.com)
+# Configuration Manager Sprinkle for [UserFrosting 5](https://www.userfrosting.com)
 
 [![Donate][kofi-badge]][kofi]
 [![Latest Version][releases-badge]][releases]
-[![UserFrosting Version][uf-version]][uf]
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 [![Build][build-badge]][build]
 [![Codecov][codecov-badge]][codecov]
@@ -12,8 +11,6 @@
 [kofi-badge]: https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-blue.svg
 [releases]: https://github.com/lcharette/UF_ConfigManager/releases
 [releases-badge]: https://img.shields.io/github/release/lcharette/UF_ConfigManager.svg
-[uf-version]: https://img.shields.io/badge/UserFrosting->=%204.3-brightgreen.svg
-[uf]: https://github.com/userfrosting/UserFrosting
 [build]: https://github.com/lcharette/UF_ConfigManager/actions?query=workflow%3ABuild
 [build-badge]: https://github.com/lcharette/UF_ConfigManager/workflows/Build/badge.svg?branch=master
 [codecov]: https://codecov.io/gh/lcharette/UF_ConfigManager
@@ -21,7 +18,7 @@
 [styleci]: https://styleci.io/repos/76127967
 [styleci-badge]: https://styleci.io/repos/76127967/shield?branch=master&style=flat
 
-Configuration Manager sprinkle for [UserFrosting 4](https://www.userfrosting.com). Lets you edit UserFrosting configs from the interface.
+Configuration Manager sprinkle for [UserFrosting 5](https://www.userfrosting.com). Lets you edit UserFrosting configs from the interface.
 
 # Help and Contributing
 
@@ -108,6 +105,6 @@ For example, to add an entry for `site.title` text and `site.registration.enable
 
 > *NOTE* Only `.json` are accepted. `Yaml` schemas are cannot be used for now.
 
-# Licence
+# License
 
 By [Louis Charette](https://github.com/lcharette). Copyright (c) 2020, free to use in personal and commercial software as per the MIT license.

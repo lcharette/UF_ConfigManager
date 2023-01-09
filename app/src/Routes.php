@@ -22,7 +22,7 @@ class Routes implements RouteDefinitionInterface
     {
         $app->group('/settings', function (RouteCollectorProxy $group) {
             $group->get('', DisplayPage::class)->setName('ConfigManager');
-            $group->post('/{schema}', UpdateSchema::class)->setName('ConfigManager.save');
+            $group->post('/{schemaName}', UpdateSchema::class)->setName('ConfigManager.save');
         });
     }
 }
