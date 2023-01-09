@@ -39,6 +39,7 @@ class ConfigManager implements SprinkleRecipe, MigrationRecipe
 
     /**
      * {@inheritdoc}
+     *
      * @codeCoverageIgnore
      */
     public function getBakeryCommands(): array
