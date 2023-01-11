@@ -14,12 +14,9 @@ namespace UserFrosting\Sprinkle\ConfigManager\Tests;
 
 use Illuminate\Database\Schema\Builder;
 use UserFrosting\Sprinkle\Core\Database\Migrator\Migrator;
-use UserFrosting\Sprinkle\Core\Testing\RefreshDatabase;
 
 class MigrationsTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testMigration(): void
     {
         /** @var Migrator */
@@ -29,6 +26,7 @@ class MigrationsTest extends TestCase
         $schema = $this->ci->get(Builder::class);
 
         // Assert initial db state
+        $migrator->reset();
         $this->assertEquals([], $schema->getColumnListing('settings'));
 
         // Run Migration
