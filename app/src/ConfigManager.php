@@ -13,13 +13,15 @@ namespace UserFrosting\Sprinkle\ConfigManager;
 use UserFrosting\Sprinkle\Admin\Admin;
 use UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100\SettingsTable;
 use UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v101\SettingsPermissions;
+use UserFrosting\Sprinkle\ConfigManager\Database\Seeds\SettingsPermissions as SettingsPermissionsSeed;
 use UserFrosting\Sprinkle\ConfigManager\Middlewares\ConfigManager as ConfigManagerMiddleware;
 use UserFrosting\Sprinkle\Core\Sprinkle\Recipe\MigrationRecipe;
+use UserFrosting\Sprinkle\Core\Sprinkle\Recipe\SeedRecipe;
 use UserFrosting\Sprinkle\FormGenerator\FormGenerator;
 use UserFrosting\Sprinkle\SprinkleRecipe;
 use UserFrosting\Theme\AdminLTE\AdminLTE;
 
-class ConfigManager implements SprinkleRecipe, MigrationRecipe
+class ConfigManager implements SprinkleRecipe, MigrationRecipe, SeedRecipe
 {
     /**
      * {@inheritdoc}
@@ -101,6 +103,18 @@ class ConfigManager implements SprinkleRecipe, MigrationRecipe
         return [
             SettingsTable::class,
             SettingsPermissions::class,
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function getSeeds(): array
+    {
+        return [
+            SettingsPermissionsSeed::class,
         ];
     }
 }

@@ -13,7 +13,12 @@ declare(strict_types=1);
 namespace UserFrosting\Sprinkle\ConfigManager\Tests;
 
 use Illuminate\Database\Schema\Builder;
+use UserFrosting\Sprinkle\Account\Database\Models\Permission;
+use UserFrosting\Sprinkle\Account\Database\Models\Role;
+use UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v101\SettingsPermissions;
 use UserFrosting\Sprinkle\Core\Database\Migrator\Migrator;
+use UserFrosting\Sprinkle\Core\Seeder\SeedRepositoryInterface;
+use UserFrosting\Sprinkle\Core\Seeder\SprinkleSeedsRepository;
 
 class MigrationsTest extends TestCase
 {
@@ -52,11 +57,32 @@ class MigrationsTest extends TestCase
         // Assert new db state
         $this->assertEquals($expectation, $result);
 
+        // Assert permission has been added
+        $this->assertInstanceOf(Permission::class, Permission::where('slug', 'update_site_config')->first());
+
+        // Assert Role doesn't have permission
+        // @phpstan-ignore-next-line - first() return Role|null
+        $this->assertNull(Role::where('slug', 'site-admin')->first()?->permissions()->where('slug', 'update_site_config')->first());
+
+        // Run both seed and test again for role permissions
+        /** @var SprinkleSeedsRepository */
+        $seeds = $this->ci->get(SeedRepositoryInterface::class);
+        foreach ($seeds as $seed) {
+            $seed->run();
+        }
+        // @phpstan-ignore-next-line - first() return Role|null
+        $this->assertInstanceOf(Permission::class, Role::where('slug', 'site-admin')->first()?->permissions()->where('slug', 'update_site_config')->first());
+
+        // Rollback permission
+        /** @var SettingsPermissions */
+        $migration = $this->ci->get(SettingsPermissions::class);
+        $migration->down();
+
+        // Assert permission has been removed
+        $this->assertNull(Permission::where('slug', 'update_site_config')->first());
+
         // Rollback and assert new db state
         $migrator->rollback();
         $this->assertEquals([], $schema->getColumnListing('settings'));
-
-        // TODO : SettingsPermissions: Test permission exist (current code should not work)
-        // TODO : SettingsPermissions: Test Role. With current code, permission will never be added on fresh one step install. SettingsPermissions should be moved to a seed.
     }
 }

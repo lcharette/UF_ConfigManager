@@ -12,8 +12,8 @@ namespace UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v101;
 
 use UserFrosting\Sprinkle\Account\Database\Migrations\v400\PermissionsTable;
 use UserFrosting\Sprinkle\Account\Database\Models\Permission;
-use UserFrosting\Sprinkle\Account\Database\Models\Role;
 use UserFrosting\Sprinkle\ConfigManager\Database\Migrations\v100\SettingsTable;
+use UserFrosting\Sprinkle\ConfigManager\Database\Seeds\SettingsPermissions as SettingsPermissionsSeed;
 use UserFrosting\Sprinkle\Core\Database\Migration;
 
 /**
@@ -34,30 +34,7 @@ class SettingsPermissions extends Migration
      */
     public function up(): void
     {
-        // Check if permission exist
-        $permissionExist = Permission::where('slug', 'update_site_config')->first();
-
-        if ($permissionExist !== null) {
-            $this->io->warning("\nPermission slug `update_site_config` already exist. Skipping...");
-
-            return;
-        }
-
-        // Add default permissions
-        $permission = new Permission([
-            'slug'        => 'update_site_config',
-            'name'        => 'Update site configuration',
-            'conditions'  => 'always()',
-            'description' => 'Edit site configuration from the UI',
-        ]);
-        $permission->save();
-
-        $roleSiteAdmin = Role::where('slug', 'site-admin')->first();
-        if ($roleSiteAdmin) {
-            $roleSiteAdmin->permissions()->attach([
-                $permission->id,
-            ]);
-        }
+        (new SettingsPermissionsSeed())->run();
     }
 
     /**
