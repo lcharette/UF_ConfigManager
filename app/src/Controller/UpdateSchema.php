@@ -107,6 +107,7 @@ class UpdateSchema
         // Next, update each config
         foreach ($data as $key => $value) {
             // We need to access the $schemaData to find if we need to cache this one
+            // TODO : $schemaData not available !
             $cached = (isset($schemaData['config'][$key]['cached'])) ? $schemaData['config'][$key]['cached'] : true;
 
             // Set the config using the manager

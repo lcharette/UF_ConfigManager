@@ -86,12 +86,12 @@ class ConfigManager implements SprinkleRecipe, MigrationRecipe, SeedRecipe
     /**
      * Returns a list of all Middlewares classes.
      *
-     * @return \Psr\Http\Server\MiddlewareInterface[]
+     * {@inheritdoc}
      */
     public function getMiddlewares(): array
     {
         return [
-            // ConfigManagerMiddleware::class,
+            ConfigManagerMiddleware::class,
         ];
     }
 

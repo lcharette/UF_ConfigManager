@@ -12,15 +12,20 @@ namespace UserFrosting\Sprinkle\ConfigManager\Middlewares;
 
 use Illuminate\Cache\Repository as Cache;
 use Illuminate\Support\Arr;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use UserFrosting\Config\Config;
 use UserFrosting\Sprinkle\ConfigManager\Database\Models\Setting;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
-use UserFrosting\Support\Repository\Repository as Config;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
  * Middleware to merge database config with file config on every request.
  */
-class ConfigManager
+// TODO : Update this class & split into two class for real Middleware separation
+class ConfigManager implements MiddlewareInterface
 {
     /**
      * Inject services.
@@ -45,16 +50,16 @@ class ConfigManager
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function __invoke($request, $response, $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->config->mergeItems(null, $this->fetch());
 
-        return $next($request, $response);
+        return $handler->handle($request);
     }
 
     /**
      * Fetch all the config from the db.
-     * Uses the cache container to store most of thoses setting in the cache system.
+     * Uses the cache container to store most of theses setting in the cache system.
      *
      * @return array<string,string>
      */

@@ -24,7 +24,9 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './public/app.js')
-    //.addEntry('mypage', './assets/mypage.js')
+
+    // CONFIG MANAGER entries
+    .addEntry('page.config-manager', './app/assets/js/ConfigManager.js')
 
     // ACCOUNT, ADMIN & ADMIN-LTE entries
     .addEntry('dashboard', './node_modules/sprinkle-admin/app/assets/dashboard.js')

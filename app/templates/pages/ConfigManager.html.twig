@@ -58,7 +58,6 @@
     </script>
 
     <!-- Include form widgets JS -->
-    {{ assets.js('js/ConfigManager') | raw }}
-    {{ assets.js('js/form-widgets') | raw }}
+    {{ encore_entry_script_tags('page.config-manager') }}
 
 {% endblock %}
