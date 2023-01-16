@@ -6,17 +6,20 @@
 [![Build][build-badge]][build]
 [![Codecov][codecov-badge]][codecov]
 [![StyleCI][styleci-badge]][styleci]
+[![][PHPStan-img]][PHPStan]
 
 [kofi]: https://ko-fi.com/A7052ICP
 [kofi-badge]: https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-blue.svg
 [releases]: https://github.com/lcharette/UF_ConfigManager/releases
-[releases-badge]: https://img.shields.io/github/release/lcharette/UF_ConfigManager.svg
+[releases-badge]: https://img.shields.io/github/release/lcharette/UF_ConfigManager.svg?include_prereleases&sort=semver
 [build]: https://github.com/lcharette/UF_ConfigManager/actions?query=workflow%3ABuild
-[build-badge]: https://github.com/lcharette/UF_ConfigManager/workflows/Build/badge.svg?branch=master
+[build-badge]: https://img.shields.io/github/actions/workflow/status/lcharette/UF_ConfigManager/Build.yml?branch=5.0&logo=github
 [codecov]: https://codecov.io/gh/lcharette/UF_ConfigManager
-[codecov-badge]: https://codecov.io/gh/lcharette/UF_ConfigManager/branch/master/graph/badge.svg
+[codecov-badge]: https://codecov.io/gh/lcharette/UF_ConfigManager/branch/5.0/graph/badge.svg
 [styleci]: https://styleci.io/repos/76127967
-[styleci-badge]: https://styleci.io/repos/76127967/shield?branch=master&style=flat
+[styleci-badge]: https://styleci.io/repos/76127967/shield?branch=5.0&style=flat
+[PHPStan-img]: https://img.shields.io/github/actions/workflow/status/lcharette/UF_ConfigManager/PHPStan.yml?branch=5.0&label=PHPStan
+[PHPStan]: https://github.com/lcharette/UF_ConfigManager/actions/workflows/PHPStan.yml
 
 Configuration Manager sprinkle for [UserFrosting 5](https://www.userfrosting.com). Lets you edit UserFrosting configs from the interface.
 
@@ -26,27 +29,26 @@ If you need help using this sprinkle or found any bug, feels free to open an iss
 
 # Installation
 
-Edit UserFrosting `app/sprinkles.json` file and add the following to the `require` list : `"lcharette/uf_configmanager": "^3.0.0"`. Also add `FormGenerator` and `ConfigManager` to the `base` list. For example:
+1. Add this package with Composer : 
+   ```
+   composer require lcharette/uf_configmanager
+   ```
 
-```json
-{
-    "require": {
-        "lcharette/uf_configmanager": "^3.0.0"
-    },
-    "base": [
-        "core",
-        "account",
-        "admin",
-        "FormGenerator",
-        "ConfigManager"
-    ]
-}
-```
+2. Edit your Sprinkle Recipe to include the ConfigManager as a Sprinkle dependency :
+   ```
+   \UserFrosting\Sprinkle\ConfigManager\ConfigManager::class
+   ```
 
-Run `composer update` then `php bakery bake` to install the sprinkle.
+3. Run :
+   ```
+   composer update
+   ```
+   ```
+   php bakery bake
+   ```
 
 ## Permissions
-The migration will automatically add the `update_site_config` permission to the `Site Administrator` role. To give access to the config UI to another user, simply add the `update_site_config` permission slug to that user role.
+The migration will automatically add the `update_site_config` permission to the `Site Administrator` role. If it's not added automatically, you can run the `UserFrosting\Sprinkle\ConfigManager\Database\Seeds\SettingsPermissions` seed using the `php bakery seed` command or add it manually in the admin UI. To give access to the config UI to another user, simply add the `update_site_config` permission slug to that user role.
 
 ## Add link to the menu
 The configuration UI is bound to the the `/settings` route. Simply add a link to this route where you want it. The checkAccess make it so it will appear only for users having the appropriate permission. For example, you can add the following to the sidebar menu :
