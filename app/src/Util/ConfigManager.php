@@ -8,24 +8,19 @@
  * @license   https://github.com/lcharette/UF_ConfigManager/blob/master/LICENSE (MIT License)
  */
 
-namespace UserFrosting\Sprinkle\ConfigManager\Middlewares;
+namespace UserFrosting\Sprinkle\ConfigManager\Util;
 
 use Illuminate\Cache\Repository as Cache;
 use Illuminate\Support\Arr;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use UserFrosting\Config\Config;
 use UserFrosting\Sprinkle\ConfigManager\Database\Models\Setting;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
- * Middleware to merge database config with file config on every request.
+ * Utility class to fetch database config, etc.
  */
-// TODO : Update this class & split into two class for real Middleware separation
-class ConfigManager implements MiddlewareInterface
+class ConfigManager
 {
     /**
      * Inject services.
@@ -39,22 +34,6 @@ class ConfigManager implements MiddlewareInterface
         protected Cache $cache,
         protected Config $config
     ) {
-    }
-
-    /**
-     * Invoke the ConfigManager middleware, merging the db config with the file based one.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request  PSR7 request
-     * @param \Psr\Http\Message\ResponseInterface      $response PSR7 response
-     * @param callable|\Closure                        $next     Next middleware
-     *
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        $this->config->mergeItems(null, $this->fetch());
-
-        return $handler->handle($request);
     }
 
     /**

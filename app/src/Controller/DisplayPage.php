@@ -20,7 +20,7 @@ use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\I18n\Translator;
 use UserFrosting\Sprinkle\Account\Authenticate\Authenticator;
 use UserFrosting\Sprinkle\Account\Exceptions\ForbiddenException;
-use UserFrosting\Sprinkle\ConfigManager\Middlewares\ConfigManager;
+use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 
 /**

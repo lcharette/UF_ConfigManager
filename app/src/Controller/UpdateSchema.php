@@ -25,7 +25,7 @@ use UserFrosting\Sprinkle\Account\Authenticate\Authenticator;
 use UserFrosting\Sprinkle\Account\Exceptions\ForbiddenException;
 use UserFrosting\Sprinkle\ConfigManager\Exceptions\MissingDataException;
 use UserFrosting\Sprinkle\ConfigManager\Exceptions\SchemaNotFoundException;
-use UserFrosting\Sprinkle\ConfigManager\Middlewares\ConfigManager;
+use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
 use UserFrosting\Sprinkle\Core\Exceptions\ValidationException;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
