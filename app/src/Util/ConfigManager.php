@@ -46,7 +46,8 @@ class ConfigManager
     {
         // Case n° 1 we don't have cached content. We load everything
         // Case n° 2 we have cached content, get and merge non cached setting into it
-        if (($cached_settings = $this->cache->get('UF_config')) === null) {
+        $cached_settings = $this->cache->get('UF_config');
+        if ($cached_settings === null || !is_array($cached_settings)) {
             $settingsCollection = Setting::all();
             $settings = $this->collectionToArray($settingsCollection);
 
@@ -55,6 +56,7 @@ class ConfigManager
             $this->cache->forever('UF_config', $cachedSettings);
         } else {
             // We have the cached values, we need to grab the non cached ones
+            /** @var Setting[] */
             $settingsCollection = Setting::where('cached', false)->get();
             $settings = array_merge_recursive($cached_settings, $this->collectionToArray($settingsCollection));
         }
@@ -72,7 +74,8 @@ class ConfigManager
     public function delete(string $key): bool
     {
         // Get the desired key
-        if (!$setting = Setting::where('key', $key)->first()) {
+        $setting = Setting::where('key', $key)->first();
+        if (!$setting instanceof Setting) {
             return false;
         }
 
@@ -105,7 +108,7 @@ class ConfigManager
         // Get the desired key
         $setting = Setting::where('key', $key)->first();
 
-        if ($setting) {
+        if ($setting instanceof Setting) {
             if ($setting->value !== $value) {
                 $setting->value = $value;
                 $setting->cached = $cached;
@@ -134,7 +137,7 @@ class ConfigManager
     /**
      * Get all the config schemas available.
      *
-     * @return mixed[]
+     * @return mixed[][]
      */
     public function getAllSchemas(): array
     {
@@ -151,18 +154,20 @@ class ConfigManager
             $files_with_path = glob($path . '/*.json');
 
             // Load every found files
-            foreach ($files_with_path as $file) {
-                // Load the file content
-                $schema = $loader->loadFile($file);
+            if ($files_with_path !== false) {
+                foreach ($files_with_path as $file) {
+                    // Load the file content
+                    $schema = $loader->loadFile($file);
 
-                // Get file name
-                $filename = basename($file, '.json');
+                    // Get file name
+                    $filename = basename($file, '.json');
 
-                //inject file name
-                $schema['filename'] = $filename;
+                    //inject file name
+                    $schema['filename'] = $filename;
 
-                // Add to list
-                $configSchemas[$filename] = $schema;
+                    // Add to list
+                    $configSchemas[$filename] = $schema;
+                }
             }
         }
 

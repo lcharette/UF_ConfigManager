@@ -18,6 +18,8 @@ use UserFrosting\Sprinkle\Core\Database\Models\Model;
  * @property string $key
  * @property string $value
  * @property bool   $cached
+ *
+ * @mixin \Illuminate\Database\Eloquent\Builder
  */
 class Setting extends Model
 {
@@ -28,6 +30,7 @@ class Setting extends Model
 
     /**
      * {@inheritdoc}
+     * @phpstan-ignore-next-line
      */
     protected $casts = [
         'cached' => 'boolean',

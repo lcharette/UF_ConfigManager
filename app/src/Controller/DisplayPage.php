@@ -20,6 +20,7 @@ use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\I18n\Translator;
 use UserFrosting\Sprinkle\Account\Authenticate\Authenticator;
 use UserFrosting\Sprinkle\Account\Exceptions\ForbiddenException;
+use UserFrosting\Sprinkle\ConfigManager\Exceptions\BadSchemaException;
 use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
 use UserFrosting\Sprinkle\FormGenerator\Form;
 
@@ -64,6 +65,11 @@ class DisplayPage
 
         // Parse each of them to get it's content
         foreach ($schemas as $i => $schemaData) {
+            // Make sure schema is valid
+            if (!isset($schemaData['config']) || !is_array($schemaData['config'])) {
+                throw new BadSchemaException();
+            }
+
             // Set the schema, the validator and the form
             $schema = new RequestSchemaRepository($schemaData['config']);
             $validator = new JqueryValidationAdapter($schema, $this->translator);

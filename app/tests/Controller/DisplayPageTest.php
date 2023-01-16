@@ -17,6 +17,8 @@ use UserFrosting\Sprinkle\Account\Database\Models\User;
 use UserFrosting\Sprinkle\Account\Testing\WithTestUser;
 use UserFrosting\Sprinkle\Core\Testing\RefreshDatabase;
 use UserFrosting\Testing\TestCase;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
+use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 class DisplayPageTest extends TestCase
 {
@@ -54,6 +56,26 @@ class DisplayPageTest extends TestCase
 
         // Asserts
         $this->assertResponseStatus(200, $response);
+        $this->assertNotSame('', (string) $response->getBody());
+    }
+
+    public function testDisplayWithBadSchema(): void
+    {
+        // Add test schema
+        /** @var ResourceLocatorInterface */
+        $locator = $this->ci->get(ResourceLocatorInterface::class);
+        $locator->addLocation(new ResourceLocation('test', __DIR__ . '/../data_bad/'));
+
+        /** @var User */
+        $user = User::factory()->create();
+        $this->actAsUser($user, permissions: ['update_site_config']);
+
+        // Create request with method and url and fetch response
+        $request = $this->createRequest('GET', '/settings');
+        $response = $this->handleRequest($request);
+
+        // Asserts
+        $this->assertResponseStatus(400, $response);
         $this->assertNotSame('', (string) $response->getBody());
     }
 }
