@@ -23,6 +23,7 @@ use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\I18n\Translator;
 use UserFrosting\Sprinkle\Account\Authenticate\Authenticator;
 use UserFrosting\Sprinkle\Account\Exceptions\ForbiddenException;
+use UserFrosting\Sprinkle\ConfigManager\Exceptions\BadSchemaException;
 use UserFrosting\Sprinkle\ConfigManager\Exceptions\MissingDataException;
 use UserFrosting\Sprinkle\ConfigManager\Exceptions\SchemaNotFoundException;
 use UserFrosting\Sprinkle\ConfigManager\Util\ConfigManager;
@@ -85,7 +86,8 @@ class UpdateSchema
         }
 
         // Load the request schema
-        $schema = $this->getSchema($schemaName);
+        $schemaData = $this->getSchemaData($schemaName);
+        $schema = $this->getSchema($schemaData);
 
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
@@ -107,8 +109,11 @@ class UpdateSchema
         // Next, update each config
         foreach ($data as $key => $value) {
             // We need to access the $schemaData to find if we need to cache this one
-            // TODO : $schemaData not available !
-            $cached = (isset($schemaData['config'][$key]['cached'])) ? $schemaData['config'][$key]['cached'] : true;
+            if (isset($schemaData['config'][$key]['cached'])) {
+                $cached = $schemaData['config'][$key]['cached'];
+            } else {
+                $cached = true;
+            }
 
             // Set the config using the manager
             $this->manager->set($key, $value, $cached);
@@ -131,11 +136,13 @@ class UpdateSchema
     }
 
     /**
-     * Load the request schema.
+     * Load the request schema data from the file.
      *
-     * @return RequestSchemaInterface
+     * @param string $schemaName
+     *
+     * @return mixed[]
      */
-    protected function getSchema(string $schemaName): RequestSchemaInterface
+    protected function getSchemaData(string $schemaName): array
     {
         // So we first get the schema data. Load file instead of in constructor as it's easier to mock/test
         $file = $this->locator->getResource('schema://config/' . $schemaName . '.json');
@@ -147,13 +154,29 @@ class UpdateSchema
         }
 
         $loader = new YamlFileLoader([]);
-        $schemaData = $loader->loadFile((string) $file);
 
-        // We can't pass the file directly to RequestSchema because it's a custom one
-        // So we create a new empty RequestSchemaRepository and feed it the `config` part of our custom schema
-        $schema = new RequestSchemaRepository($schemaData['config']);
+        return $loader->loadFile((string) $file);
+    }
 
-        return $schema;
+    /**
+     * Create a new RequestSchema object from the schema data.
+     *
+     * We can't pass the file directly to RequestSchema because it's a custom
+     * one. So we create a new empty RequestSchemaRepository and feed it the
+     * `config` part of our custom schema
+     *
+     * @param mixed[] $schemaData
+     *
+     * @return RequestSchemaInterface
+     */
+    protected function getSchema(array $schemaData): RequestSchemaInterface
+    {
+        // Make sure $schemaData has required `config` key.
+        if (!isset($schemaData['config']) || !is_array($schemaData['config'])) {
+            throw new BadSchemaException();
+        }
+
+        return new RequestSchemaRepository($schemaData['config']);
     }
 
     /**

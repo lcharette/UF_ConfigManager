@@ -88,12 +88,40 @@ class UpdateSchemaTest extends TestCase
         ], $response);
     }
 
+    public function testUpdateWithBadSchema(): void
+    {
+        // Add test schema
+        /** @var ResourceLocatorInterface */
+        $locator = $this->ci->get(ResourceLocatorInterface::class);
+        $locator->addLocation(new ResourceLocation('test', __DIR__ . '/../data_bad/'));
+
+        /** @var User */
+        $user = User::factory()->create();
+        $this->actAsUser($user, permissions: ['update_site_config']);
+
+        // Create request with method and url and fetch response
+        $data = ['data' => [
+            'test.foo' => '123bar',
+            'test.bar' => 'foo123',
+        ]];
+        $request = $this->createJsonRequest('POST', '/settings/bad', $data);
+        $response = $this->handleRequest($request);
+
+        // Asserts
+        $this->assertJsonResponse([
+            'title'       => 'Bad Schema',
+            'description' => 'Config Schema is invalid or is missing the required fields',
+            'status'      => 400,
+        ], $response);
+        $this->assertResponseStatus(400, $response);
+    }
+
     public function testUpdate(): void
     {
         // Add test schema
         /** @var ResourceLocatorInterface */
         $locator = $this->ci->get(ResourceLocatorInterface::class);
-        $locator->addLocation(new ResourceLocation('test', __DIR__ . '/../'));
+        $locator->addLocation(new ResourceLocation('test', __DIR__ . '/../data/'));
 
         /** @var User */
         $user = User::factory()->create();
@@ -131,7 +159,7 @@ class UpdateSchemaTest extends TestCase
         // Add test schema
         /** @var ResourceLocatorInterface */
         $locator = $this->ci->get(ResourceLocatorInterface::class);
-        $locator->addLocation(new ResourceLocation('test', __DIR__ . '/../'));
+        $locator->addLocation(new ResourceLocation('test', __DIR__ . '/../data/'));
 
         /** @var User */
         $user = User::factory()->create();

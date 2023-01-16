@@ -1,0 +1,11 @@
+{
+    "foo.foo": {
+        "validators": {},
+        "cached": true,
+        "form": {
+            "type": "text",
+            "label": "Foo Foo",
+            "icon": ""
+        }
+    }
+}

@@ -10,6 +10,10 @@
 
 return [
     'ERROR' => [
+        'BAD_SCHEMA' => [
+            'TITLE'       => 'Bad Schema',
+            'DESCRIPTION' => 'Config Schema is invalid or is missing the required fields',
+        ],
         'MISSING_DATA' => [
             'TITLE'       => 'Missing Data',
             'DESCRIPTION' => 'POST data is missing or invalid',

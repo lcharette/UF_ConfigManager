@@ -5,7 +5,6 @@
     "config": {
         "test.foo" : {
             "validators" : {},
-            "cached" : true,
             "form" : {
                 "type" : "text",
                 "label" : "Test Foo",

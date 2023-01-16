@@ -34,7 +34,7 @@ class ConfigManagerTest extends TestCase
         $locator = Mockery::mock(ResourceLocatorInterface::class)
             ->shouldReceive('findResources')
             ->with('schema://config', true, false)
-            ->andReturn([__DIR__ . '/../schema/config'])
+            ->andReturn([__DIR__ . '/../data/schema/config'])
             ->getMock();
         $cache = Mockery::mock(Cache::class);
         $config = Mockery::mock(Config::class);
@@ -77,7 +77,6 @@ class ConfigManagerTest extends TestCase
                     'test.foo' => [
                         'validators' => [
                         ],
-                        'cached'     => true,
                         'form'       => [
                             'type'  => 'text',
                             'label' => 'Test Foo',
