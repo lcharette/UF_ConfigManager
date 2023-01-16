@@ -30,7 +30,7 @@ class Setting extends Model
 
     /**
      * {@inheritdoc}
-     * 
+     *
      * @phpstan-ignore-next-line
      */
     protected $casts = [
