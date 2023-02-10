@@ -1,4 +1,8 @@
 {
+    "name": "uf_configmanager",
+    "license": "MIT",
+    "version": "5.0.0",
+    "description": "This Sprinkle provides a UI for core and custom site settings",
     "dependencies": {
         "sprinkle-admin": "github:userfrosting/sprinkle-admin",
         "theme-adminlte": "github:userfrosting/theme-adminlte"
