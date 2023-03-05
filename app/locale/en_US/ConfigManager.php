@@ -26,5 +26,6 @@ return [
     'CONFIG_MANAGER' => [
         'TITLE'       => 'Site Configuration',
         'DESCRIPTION' => 'Manage your site configuration',
+        'SAVED'       => 'Changes saved successfully !',
     ],
 ];

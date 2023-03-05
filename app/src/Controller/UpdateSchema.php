@@ -120,7 +120,7 @@ class UpdateSchema
         }
 
         //Success message!
-        $this->alerts->addMessageTranslated('success', 'SITE.CONFIG.SAVED');
+        $this->alerts->addMessageTranslated('success', 'CONFIG_MANAGER.SAVED');
     }
 
     /**

@@ -12,12 +12,9 @@ return [
     'ADMINLTE' => [
         'SETTINGS' => [
             '@TRANSLATION' => 'AdminLTE Settings',
-
             'DESC'         => 'Settings for the AdminLTE Theme',
-
             'SKIN'         => 'Skin color',
         ],
-
         'SKIN'     => [
             'BLUE'         => 'Blue',
             'BLACK'        => 'Black',
