@@ -56,7 +56,7 @@ The configuration UI is bound to the the `/settings` route. Simply add a link to
 ```html
 {% if checkAccess('update_site_config') %}
 <li>
-    <a href="{{site.uri.public}}/settings"><i class="fa fa-gears fa-fw"></i> <span>{{ translate("SITE.CONFIG.MANAGER") }}</span></a>
+    <a href="{{site.uri.public}}/settings"><i class="fa fa-gears fa-fw"></i> <span>{{ translate("CONFIG_MANAGER.TITLE") }}</span></a>
 </li>
 {% endif %}
 ```

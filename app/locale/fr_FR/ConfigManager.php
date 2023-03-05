@@ -9,28 +9,22 @@
  */
 
 return [
-    'SITE' => [
-        'CONFIG' => [
-            '@TRANSLATION' => 'Paramètres de UserFrosting',
-
-            'DESC' => "Paramètres principaux de UserFrosting. Voir le fichier config pour plus d'options",
-
-            'MANAGER' => 'Gestionnaire des paramètres',
-
-            'PAGEDESC' => 'Cette page permet de modifier les paramètres globaux du site enregistrés dans la base de données',
-
-            'SAVED' => 'Changements sauvegardés avec succès !',
+    'ERROR' => [
+        'BAD_SCHEMA' => [
+            'TITLE'       => 'Mauvais schema',
+            'DESCRIPTION' => 'Le schema de configuration est invalide ou les champs requis sont manquant.',
         ],
-        'TITLE' => [
-            '@TRANSLATION' => 'Titre du site',
-            'REQUIRED'     => 'Le titre du site est requis',
+        'MISSING_DATA' => [
+            'TITLE'       => 'Données manquantes',
+            'DESCRIPTION' => 'Données POST sont manquant ou invalide',
         ],
-        'REGISTRATION' => [
-            'ENABLED'                    => "Activer l'inscription",
-            'REQUIRE_EMAIL_VERIFICATION' => "Exiger une vérification par e-mail lors de l'inscription",
+        'SCHEMA_NOT_FOUND' => [
+            'TITLE'       => 'Schema introuvable',
+            'DESCRIPTION' => 'Schema {{schema}} introuvable',
         ],
     ],
-    'SETTINGS' => [
-        'DISPLAY_ERROR_DETAILS' => 'Afficher le détails des erreurs',
+    'CONFIG_MANAGER' => [
+        'TITLE'       => 'Configuration du site',
+        'DESCRIPTION' => 'Gérer la configuration du site',
     ],
 ];

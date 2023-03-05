@@ -23,4 +23,8 @@ return [
             'DESCRIPTION' => 'Schema {{schema}} not found',
         ],
     ],
+    'CONFIG_MANAGER' => [
+        'TITLE'       => 'Site Configuration',
+        'DESCRIPTION' => 'Manage your site configuration',
+    ],
 ];
