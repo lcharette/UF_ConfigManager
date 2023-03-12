@@ -18,10 +18,15 @@ use UserFrosting\Sprinkle\ConfigManager\Middlewares\ConfigManagerMiddleware;
 use UserFrosting\Sprinkle\Core\Sprinkle\Recipe\MigrationRecipe;
 use UserFrosting\Sprinkle\Core\Sprinkle\Recipe\SeedRecipe;
 use UserFrosting\Sprinkle\FormGenerator\FormGenerator;
+use UserFrosting\Sprinkle\MiddlewareRecipe;
 use UserFrosting\Sprinkle\SprinkleRecipe;
 use UserFrosting\Theme\AdminLTE\AdminLTE;
 
-class ConfigManager implements SprinkleRecipe, MigrationRecipe, SeedRecipe
+class ConfigManager implements
+    SprinkleRecipe,
+    MiddlewareRecipe,
+    MigrationRecipe,
+    SeedRecipe
 {
     /**
      * {@inheritdoc}
@@ -37,16 +42,6 @@ class ConfigManager implements SprinkleRecipe, MigrationRecipe, SeedRecipe
     public function getPath(): string
     {
         return __DIR__ . '/../';
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getBakeryCommands(): array
-    {
-        return [];
     }
 
     /**
