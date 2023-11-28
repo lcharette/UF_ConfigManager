@@ -2,16 +2,19 @@
 
 [![Donate][kofi-badge]][kofi]
 [![Latest Version][releases-badge]][releases]
+[![UserFrosting Version][uf-version]][uf]
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 [![Build][build-badge]][build]
+[![PHPStan][PHPStan-img]][PHPStan]
 [![Codecov][codecov-badge]][codecov]
 [![StyleCI][styleci-badge]][styleci]
-[![][PHPStan-img]][PHPStan]
 
 [kofi]: https://ko-fi.com/A7052ICP
-[kofi-badge]: https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-blue.svg
+[kofi-badge]: https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-blue?logo=ko-fi&logoColor=white
 [releases]: https://github.com/lcharette/UF_ConfigManager/releases
 [releases-badge]: https://img.shields.io/github/release/lcharette/UF_ConfigManager.svg?include_prereleases&sort=semver
+[uf-version]: https://img.shields.io/badge/UserFrosting->=%205.0-brightgreen.svg
+[uf]: https://github.com/userfrosting/UserFrosting
 [build]: https://github.com/lcharette/UF_ConfigManager/actions?query=workflow%3ABuild
 [build-badge]: https://img.shields.io/github/actions/workflow/status/lcharette/UF_ConfigManager/Build.yml?branch=5.0&logo=github
 [codecov]: https://codecov.io/gh/lcharette/UF_ConfigManager

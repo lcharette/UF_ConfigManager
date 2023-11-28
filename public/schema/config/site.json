@@ -12,7 +12,7 @@
             "form" : {
                 "type" : "text",
                 "label" : "SITE.TITLE",
-                "icon" : "fa-comment"
+                "icon" : "fas fa-comment"
             }
         },
         "site.registration.enabled" : {

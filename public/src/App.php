@@ -34,14 +34,6 @@ class App implements SprinkleRecipe
     /**
      * {@inheritdoc}
      */
-    public function getBakeryCommands(): array
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getSprinkles(): array
     {
         return [
@@ -69,16 +61,5 @@ class App implements SprinkleRecipe
     public function getServices(): array
     {
         return [];
-    }
-
-    /**
-     * Returns a list of all Middlewares classes.
-     *
-     * @return \Psr\Http\Server\MiddlewareInterface[]
-     */
-    public function getMiddlewares(): array
-    {
-        return [
-        ];
     }
 }

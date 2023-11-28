@@ -4,12 +4,12 @@
     "version": "5.0.0",
     "description": "This Sprinkle provides a UI for core and custom site settings",
     "dependencies": {
-        "sprinkle-admin": "github:userfrosting/sprinkle-admin",
-        "theme-adminlte": "github:userfrosting/theme-adminlte"
+        "@lcharette/formgenerator": "^5.0",
+        "@userfrosting/sprinkle-admin": "^5.0",
+        "@userfrosting/theme-adminlte": "^5.0"
     },
     "devDependencies": {
-        "@symfony/webpack-encore": "^1.7.0",
-        "file-loader": "^6.2.0",
+        "@symfony/webpack-encore": "^4.4.0",
         "sass": "^1.51.0",
         "webpack-notifier": "^1.14.1"
     },
