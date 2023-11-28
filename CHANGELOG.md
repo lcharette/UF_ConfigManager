@@ -1,6 +1,6 @@
 # Change Log
 
-## [5.0.0](https://github.com/lcharette/UF_ConfigManager/compare/3.0.0...4.0.0)
+## [4.0.0](https://github.com/lcharette/UF_ConfigManager/compare/3.0.0...4.0.0)
 - Update for UserFrosting 5
 - Default schema is not included anymore. You can copy it from `public/schema/config/`. 
 - Demo is available to test from `public/`
