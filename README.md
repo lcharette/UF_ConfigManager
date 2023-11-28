@@ -31,7 +31,7 @@ Configuration Manager sprinkle for [UserFrosting 5](https://www.userfrosting.com
 If you need help using this sprinkle or found any bug, feels free to open an issue or submit a pull request. You can also find me on the [UserFrosting Chat](https://chat.userfrosting.com/) most of the time for direct support.
 
 # Installation
-
+To install in your Sprinkle : 
 1. Add this package with Composer : 
    ```
    composer require lcharette/uf_configmanager
@@ -49,6 +49,13 @@ If you need help using this sprinkle or found any bug, feels free to open an iss
    ```
    php bakery bake
    ```
+
+# Working example
+
+The `public/` directory serves as an example of ConfigManager. You can clone this repository and install as any UserFrosting 5 sprinkle :
+1. `composer install`
+2. `php bakery bake`
+3. `php -S localhost:8080 -t public`
 
 ## Permissions
 The migration will automatically add the `update_site_config` permission to the `Site Administrator` role. If it's not added automatically, you can run the `UserFrosting\Sprinkle\ConfigManager\Database\Seeds\SettingsPermissions` seed using the `php bakery seed` command or add it manually in the admin UI. To give access to the config UI to another user, simply add the `update_site_config` permission slug to that user role.
