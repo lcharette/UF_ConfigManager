@@ -1,5 +1,8 @@
 # Change Log
 
+## [4.0.1](https://github.com/lcharette/UF_ConfigManager/compare/4.0.0...4.0.1)
+- Publish npm package & update README
+
 ## [4.0.0](https://github.com/lcharette/UF_ConfigManager/compare/3.0.0...4.0.0)
 - Update for UserFrosting 5
 - Default schema is not included anymore. You can copy it from `public/schema/config/`. 

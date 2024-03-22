@@ -42,7 +42,12 @@ To install in your Sprinkle :
    \UserFrosting\Sprinkle\ConfigManager\ConfigManager::class
    ```
 
-3. Run :
+3. Add Config Manager frontend assets to your webpack entries. Open `webpack.config.js` and add in `const sprinkles { ... }`: 
+   ```
+   ConfigManager: require('@lcharette/configmanager/webpack.entries'),
+   ```
+
+4. Run :
    ```
    composer update
    ```

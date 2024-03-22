@@ -1,8 +1,29 @@
 {
-    "name": "uf_configmanager",
+    "name": "@lcharette/configmanager",
+    "version": "4.0.1",
+    "description": "UI for core and custom site settings for UserFrosting 5",
+    "funding": "https://ko-fi.com/lcharette",
     "license": "MIT",
-    "version": "5.0.0",
-    "description": "This Sprinkle provides a UI for core and custom site settings",
+    "author": "Louis Charette (https://bbqsoftwares.com/)",
+    "keywords": [
+        "UserFrosting",
+        "Sprinkle",
+        "Config",
+        "Config Manager"
+    ],
+    "homepage": "https://github.com/lcharette/UF_ConfigManager#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lcharette/UF_ConfigManager.git"
+    },
+    "bugs": {
+        "url": "https://github.com/lcharette/UF_ConfigManager/issues"
+    },
+    "files": [
+      "CHANGELOG.md",
+      "app/assets",
+      "webpack.entries.js"
+    ],
     "dependencies": {
         "@lcharette/formgenerator": "^5.0",
         "@userfrosting/sprinkle-admin": "^5.0",
