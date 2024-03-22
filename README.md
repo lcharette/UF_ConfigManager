@@ -42,15 +42,17 @@ To install in your Sprinkle :
    \UserFrosting\Sprinkle\ConfigManager\ConfigManager::class
    ```
 
-3. Add Config Manager frontend assets to your webpack entries. Open `webpack.config.js` and add in `const sprinkles { ... }`: 
+3. Add Config Manager frontend assets dependencies : 
+   ```
+   npm i --save @lcharette/configmanager
+   ```
+
+4. Add Config Manager frontend entries to your webpack entries. Open `webpack.config.js` and add in `const sprinkles { ... }`: 
    ```
    ConfigManager: require('@lcharette/configmanager/webpack.entries'),
    ```
 
-4. Run :
-   ```
-   composer update
-   ```
+5. Run :
    ```
    php bakery bake
    ```
