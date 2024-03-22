@@ -47,8 +47,9 @@ To install in your Sprinkle :
    npm i --save @lcharette/configmanager
    ```
 
-4. Add Config Manager frontend entries to your webpack entries. Open `webpack.config.js` and add in `const sprinkles { ... }`: 
+4. Add Config Manager & FormGenerator frontend entries to your webpack entries. Open `webpack.config.js` and add in `const sprinkles { ... }`: 
    ```
+   FormGenerator: require('@lcharette/formgenerator/webpack.entries'),
    ConfigManager: require('@lcharette/configmanager/webpack.entries'),
    ```
 
